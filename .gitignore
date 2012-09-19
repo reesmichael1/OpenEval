@@ -1,14 +1,6 @@
 
 *.autosave
 
-QtEval/QtEval.pro.user
-
-QtEval/.DS_Store
-
-QtEval/EMPLOYEES.txt
-
-QtEval/EMPLOYERS.txt
-
 Files/EMPLOYEEID.txt
 
 Files/EMPLOYERID.txt
@@ -17,17 +9,11 @@ Files/EMPLOYERS.txt
 
 Files/.DS_Store
 
-QtEval/EMPLOYEEID.txt
-
-QtEval/EMPLOYERID.txt
-
 .DS_Store
 
 Files/EMPLOYEES.txt
 
 Files/FIELDPLACEMENTS.txt
-
-OpenEval/OpenEval.pro.user
 
 Source/OpenEval.pro.user
 
