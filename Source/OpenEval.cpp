@@ -59,7 +59,6 @@ OpenEval::OpenEval()
     averageScore->setRange(1 , 5);
     averageScore->setReadOnly(true);
     averageScore->setMaximumWidth(55);
-    //Finish creating labels and text boxes.
 
     //Create button to add a new employee.
     addEmployeeButton = new QPushButton(tr("Create New Employee"));
@@ -74,9 +73,10 @@ OpenEval::OpenEval()
     employerInfoButton = new QPushButton(tr("Employer Info"));
 
     nextEmployeeButton = new QPushButton(tr("Next Employee"));
-    connect(nextEmployeeButton, SIGNAL(clicked()), this, SLOT(nextEmployeeID()));
+    connect(nextEmployeeButton, SIGNAL(clicked()), this, SLOT(setNextEmployee()));
 
     previousEmployeeButton = new QPushButton(tr("Previous Employee"));
+    connect(previousEmployeeButton, SIGNAL(clicked()), this, SLOT(setPreviousEmployee()));
 
     nextEmployerButton = new QPushButton(tr("Next Employer"));
     connect(nextEmployerButton, SIGNAL(clicked()), this, SLOT(setNextEmployer()));
@@ -266,26 +266,43 @@ void OpenEval::nextEmployeeID()
         {
         fieldPlacementsList = fieldPlacementsString.split(',');
         fieldPlacementsString = fieldPlacements.readLine();
+
         }
 
         else
         {
             fieldPlacementsFile.close();
             fieldPlacementsFile.open(QIODevice::Text | QIODevice::ReadOnly);
+            fieldPlacementsString = fieldPlacements.readLine();
         }
+
+        QMessageBox msgBox;
+        msgBox.setText(tr("fieldPlacementsString is %1.").arg(fieldPlacementsString));
+        msgBox.exec();
+
     } while (fieldPlacementsList.at(1).toInt() != currentEmployerID);
 
     currentEmployeeID = fieldPlacementsList.at(0).toInt();
 
     fieldPlacementsFile.close();
-
-    updateEmployeeName();
 }
 
 void OpenEval::setNextEmployer()
 {
     nextEmployerID();
     updateEmployerName();
+}
+
+void OpenEval::setNextEmployee()
+{
+    nextEmployeeID();
+    updateEmployeeName();
+}
+
+void OpenEval::setPreviousEmployee()
+{
+    previousEmployeeID();
+    updateEmployeeName();
 }
 
 //Display the next employer in EMPLOYERS.txt. If at the end of the file, display the first employer.

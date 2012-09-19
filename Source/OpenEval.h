@@ -18,7 +18,8 @@ public slots:
     void addEmployee();
     void addEmployer();
     void removeEmployee();
-    void nextEmployeeID();
+    void setNextEmployee();
+    void setPreviousEmployee();
     void setPreviousEmployer();
     void setNextEmployer();
     void setFields();
@@ -61,7 +62,9 @@ private:
     void updateEmployeeName();
     void updateEmployerName();
     void nextEmployerID();
+    void nextEmployeeID();
     void previousEmployerID();
+    void previousEmployeeID();
     void updateEmployeeID();
     void updateEmployerID();
     void disableEmployeeFields();
