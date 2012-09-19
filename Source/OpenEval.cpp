@@ -287,6 +287,10 @@ void OpenEval::nextEmployeeID()
     fieldPlacementsFile.close();
 }
 
+void OpenEval::previousEmployeeID()
+{
+}
+
 void OpenEval::setNextEmployer()
 {
     nextEmployerID();
