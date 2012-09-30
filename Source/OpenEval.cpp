@@ -226,6 +226,8 @@ void OpenEval::addEmployer()
         employerDataFile->close();
 
         //Update the Employer Name field to reflect the new employer.
+        setEmployeeIDForEmployer();
+        updateEmployeeName();
         updateEmployerName();
 
         //Add the new employer to the New Employee dialog box.
