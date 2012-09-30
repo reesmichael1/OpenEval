@@ -251,13 +251,9 @@ void OpenEval::submitEmployee()
     averageScore->setValue(dAverage);
 }
 
-//Display the next employee employed by the currently displayed employer.
-void OpenEval::nextEmployeeID()
+QVector<int> OpenEval::generateEmployeeIDVector()
 {
-
-    //Go to field placements and find the current employee. Find the next employee with the same employer ID. Change the current
-    //employee ID. Update the employee name field with the new employee ID.
-
+    QVector<int> employeeIDVector;
     QFile fieldPlacementsFile("/Users/ladmin/Documents/OpenEval/Files/FIELDPLACEMENTS.txt");
     fieldPlacementsFile.open(QIODevice::ReadOnly | QIODevice::Text);
 
@@ -265,7 +261,6 @@ void OpenEval::nextEmployeeID()
 
     QString fieldPlacementsString = fieldPlacements.readLine();
     QStringList fieldPlacementsList;
-    QVector<int> employeeIDVector;
 
     while (fieldPlacementsString != "")
     {
@@ -276,6 +271,22 @@ void OpenEval::nextEmployeeID()
         }
         fieldPlacementsString = fieldPlacements.readLine();
     }
+
+    fieldPlacementsFile.close();
+
+    return employeeIDVector;
+}
+
+//Display the next employee employed by the currently displayed employer.
+void OpenEval::nextEmployeeID()
+{
+
+    //Go to field placements and find the current employee. Find the next employee with the same employer ID. Change the current
+    //employee ID. Update the employee name field with the new employee ID.
+
+    QVector<int> employeeIDVector;
+
+    employeeIDVector = generateEmployeeIDVector();
 
     int i = 0;
     int nextEmployeeID;
@@ -300,24 +311,9 @@ void OpenEval::nextEmployeeID()
 
 void OpenEval::previousEmployeeID()
 {
-    QFile fieldPlacementsFile("/Users/ladmin/Documents/OpenEval/Files/FIELDPLACEMENTS.txt");
-    fieldPlacementsFile.open(QIODevice::ReadOnly | QIODevice::Text);
-
-    QTextStream fieldPlacements(&fieldPlacementsFile);
-
     QVector<int> employeeIDVector;
-    QStringList fieldPlacementsList;
-    QString fieldPlacementsString = fieldPlacements.readLine();
 
-    while (fieldPlacementsString != "")
-    {
-        fieldPlacementsList = fieldPlacementsString.split(',');
-        if (fieldPlacementsList.at(1).toInt() == currentEmployerID)
-        {
-            employeeIDVector.append(fieldPlacementsList.at(0).toInt());
-        }
-        fieldPlacementsString = fieldPlacements.readLine();
-    }
+    employeeIDVector = generateEmployeeIDVector();
 
     int i = 0;
     int previousEmployeeID;
@@ -339,8 +335,6 @@ void OpenEval::previousEmployeeID()
     }
 
     currentEmployeeID = previousEmployeeID;
-
-    fieldPlacementsFile.close();
 }
 
 //Set the employer ID to the next employer. Set the employee ID to match. Set the Employee Name and Employer Name fields accordingly.
@@ -553,6 +547,12 @@ void OpenEval::setFirstEmployerID()
 //Set the employee ID to the first one that matches the current employer ID.
 void OpenEval::setEmployeeIDForEmployer()
 {
+
+    QVector<int> employeeIDVector = generateEmployeeIDVector();
+
+    if (!employeeIDVector.isEmpty())
+    {
+
     //Open the field placements file. Find the first employee employed by this employer. Set this employee ID to be the current.
     QFile fieldPlacementsFile("/Users/ladmin/Documents/OpenEval/Files/FIELDPLACEMENTS.txt");
     fieldPlacementsFile.open(QIODevice::ReadOnly | QIODevice::Text);
@@ -570,6 +570,12 @@ void OpenEval::setEmployeeIDForEmployer()
     } while (fieldPlacementsList.at(1).toInt() != currentEmployerID);
 
     fieldPlacementsFile.close();
+    }
+
+    else
+    {
+        currentEmployeeID = 0;
+    }
 }
 
 void OpenEval::enableEmployeeFields()

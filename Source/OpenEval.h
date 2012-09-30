@@ -75,6 +75,7 @@ private:
     void enableEmployeeFields();
     void disableEmployerFields();
     void enableEmployerFields();
+    QVector<int> generateEmployeeIDVector();
 };
 
 #endif // OPENEVAL
