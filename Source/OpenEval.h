@@ -5,6 +5,7 @@
 #include <QFile>
 #include "NewEmployee.h"
 #include "NewEmployer.h"
+#include "ReviewEmployee.h"
 
 class OpenEval : public QWidget
 {
@@ -12,6 +13,8 @@ class OpenEval : public QWidget
 
 public:
     OpenEval();
+    int returnEmployeeID();
+    int returnEmployerID();
 
 public slots:
     void submitEmployee();
@@ -23,6 +26,7 @@ public slots:
     void setPreviousEmployer();
     void setNextEmployer();
     void setFields();
+    void reviewEmployee();
 
 private:
     QLineEdit *employeeName;
@@ -57,6 +61,7 @@ private:
     QTextStream *employerIDData;
     NewEmployee newEmployeeWindow;
     NewEmployer newEmployerWindow;
+    ReviewEmployee reviewEmployeeWindow;
     int currentEmployeeID;
     int currentEmployerID;
     bool employeeDataFileEmpty;
@@ -76,6 +81,7 @@ private:
     void disableEmployerFields();
     void enableEmployerFields();
     QVector<int> generateEmployeeIDVector();
+    QVector<int> generateEmployerIDVector();
 };
 
 #endif // OPENEVAL

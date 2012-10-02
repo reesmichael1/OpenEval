@@ -2,7 +2,6 @@
 #include <QFile>
 #include "OpenEval.h"
 
-
 //Constructor for main window. This draws the main window and calls functions to construct other windows.
 OpenEval::OpenEval()
 {
@@ -97,6 +96,7 @@ OpenEval::OpenEval()
     findEmployerButton = new QPushButton(tr("Find Employer"));
 
     reviewButton = new QPushButton(tr("Review"));
+    connect(reviewButton, SIGNAL(clicked()), this, SLOT(reviewEmployee()));
 
     //Draw scores.
     QHBoxLayout *workQualityLayout = new QHBoxLayout;
@@ -171,7 +171,7 @@ OpenEval::OpenEval()
     //updateEmployerID();
     //setNextEmployer();
     setFirstEmployerID();
-    setFirstEmployeeID();
+    setEmployeeIDForEmployer();
     setFields();
 }
 
@@ -279,6 +279,27 @@ QVector<int> OpenEval::generateEmployeeIDVector()
     return employeeIDVector;
 }
 
+QVector<int> OpenEval::generateEmployerIDVector()
+{
+    QVector<int> employerIDVector;
+
+    employerDataFile->open(QIODevice::Text | QIODevice::ReadOnly);
+
+    QString employerDataString = employerData->readLine();
+    QStringList employerDataList;
+
+    while (employerDataString != "")
+    {
+        employerDataList = employerDataString.split(',');
+        employerIDVector.append(employerDataList.at(0).toInt());
+        employerDataString = employerData->readLine();
+    }
+
+    employerDataFile->close();
+
+    return employerIDVector;
+}
+
 //Display the next employee employed by the currently displayed employer.
 void OpenEval::nextEmployeeID()
 {
@@ -293,7 +314,12 @@ void OpenEval::nextEmployeeID()
     int i = 0;
     int nextEmployeeID;
 
-    if (currentEmployeeID == employeeIDVector.last())
+    if (currentEmployeeID == 0)
+    {
+        nextEmployeeID = 0;
+    }
+
+    else if (currentEmployeeID == employeeIDVector.last())
     {
         nextEmployeeID = employeeIDVector.at(0);
     }
@@ -320,7 +346,12 @@ void OpenEval::previousEmployeeID()
     int i = 0;
     int previousEmployeeID;
 
-    if (employeeIDVector.at(i) == currentEmployeeID)
+    if (currentEmployeeID == 0)
+    {
+        previousEmployeeID = 0;
+    }
+
+    else if (employeeIDVector.at(i) == currentEmployeeID)
     {
         previousEmployeeID = employeeIDVector.last();
     }
@@ -364,73 +395,72 @@ void OpenEval::setPreviousEmployee()
 //Set the employer ID to the next employer in EMPLOYERS.txt. If at the end of the file, display the first employer.
 void OpenEval::nextEmployerID()
 {
-    employerDataFile->open(QIODevice::Text | QIODevice::ReadOnly);
 
-    QStringList employerDataList;
-    QString employerDataString = employerData->readLine();
+    QVector<int> employerIDVector;
 
-    //Read to the line containing the current employer's name.
-    if (employerDataString != "")
+    employerIDVector = generateEmployerIDVector();
+
+    int i = 0;
+    int nextEmployerID;
+
+    if (currentEmployerID == 0)
     {
-        do
-        {
-            if (employerDataString != "")
-            {
-                employerDataList = employerDataString.split(',');
-                employerDataString = employerData->readLine();
-            }
-        } while (employerDataList.at(0).toInt() != currentEmployerID);
-
-        //Read the next line and set the employer name, or, if it is empty...
-        if (employerDataString != "")
-        {
-            employerDataList = employerDataString.split(',');
-            currentEmployerID = employerDataList.at(0).toInt();
-        }
-
-        //...read the first line and set the first employer's name.
-        else
-        {
-            employerDataFile->close();
-            employerDataFile->open(QIODevice::Text | QIODevice::ReadOnly);
-            employerDataString = employerData->readLine();
-            employerDataList = employerDataString.split(',');
-            currentEmployerID = employerDataList.at(0).toInt();
-        }
-
-        employerDataFile->close();
+        nextEmployerID = 0;
     }
 
-    /*
+    else if (currentEmployerID == employerIDVector.last())
+    {
+        nextEmployerID = employerIDVector.at(0);
+    }
+
     else
     {
-        currentEmployerID = 0;
+        while (employerIDVector.at(i) != currentEmployerID)
+        {
+            i++;
+        }
+        i++;
+        nextEmployerID = employerIDVector.at(i);
     }
-    */
+
+    currentEmployerID = nextEmployerID;
+
 }
 
 //Set the employer ID to the previous employer in EMPLOYERS.txt. If at the beginning of the file, display the last employer.
 void OpenEval::previousEmployerID()
 {
 
-    employerDataFile->open(QIODevice::Text | QIODevice::ReadOnly);
+    QVector<int> employerIDVector = generateEmployerIDVector();
 
+    employerIDVector = generateEmployerIDVector();
+
+    int i = 0;
     int previousEmployerID;
-    QString employerDataString = employerData->readLine();
-    QStringList employerDataList = employerDataString.split(',');
 
-    while (employerDataList.at(0).toInt() != currentEmployerID)
+    if (currentEmployerID == 0)
     {
-        employerDataList = employerDataString.split(',');
-        employerDataString = employerData->readLine();
-        if (employerDataList.at(0).toInt() != currentEmployerID)
+        previousEmployerID = 0;
+    }
+
+    else if (employerIDVector.at(i) == currentEmployerID)
+    {
+        previousEmployerID = employerIDVector.last();
+    }
+    else
+    {
+        while (employerIDVector.at(i) != currentEmployerID)
         {
-            previousEmployerID = employerDataList.at(0).toInt();
+            if (employerIDVector.at(i) != currentEmployerID)
+            {
+                previousEmployerID = employerIDVector.at(i);
+                i++;
+            }
         }
     }
+
     currentEmployerID = previousEmployerID;
 
-    employerDataFile->close();
 }
 
 //Set the employer ID to the previous employer in EMPLOYERS.txt. Set the employee ID to this employer's first employee. Set the fields.
@@ -439,6 +469,15 @@ void OpenEval::setPreviousEmployer()
     previousEmployerID();
     setEmployeeIDForEmployer();
     setFields();
+}
+
+void OpenEval::reviewEmployee()
+{
+    reviewEmployeeWindow.setEmployeeID(currentEmployeeID);
+    reviewEmployeeWindow.setEmployerID(currentEmployerID);
+    reviewEmployeeWindow.setEmployeeName();
+    reviewEmployeeWindow.setEmployerName();
+    reviewEmployeeWindow.show();
 }
 
 //Set the Employer Name field to display the current employer's name.
@@ -480,6 +519,7 @@ void OpenEval::updateEmployeeName()
     if (currentEmployeeID == 0)
     {
         employeeNameString = "";
+        disableEmployeeFields();
     }
 
     else if (employeeDataString != "")
@@ -493,10 +533,11 @@ void OpenEval::updateEmployeeName()
         enableEmployeeFields();
     }
 
-    else
+    /*else
     {
         employeeNameString = "";
-    }
+        disableEmployeeFields();
+    }*/
 
     employeeName->setText(employeeNameString);
     employeeDataFile->close();
@@ -518,7 +559,7 @@ void OpenEval::setFirstEmployeeID()
 
     else
     {
-        currentEmployeeID = 1;
+        currentEmployeeID = 0;
         disableEmployeeFields();
     }
     employeeDataFile->close();
@@ -580,9 +621,20 @@ void OpenEval::setEmployeeIDForEmployer()
     }
 }
 
+int OpenEval::returnEmployeeID()
+{
+    return currentEmployeeID;
+}
+
+int OpenEval::returnEmployerID()
+{
+    return currentEmployerID;
+}
+
 void OpenEval::enableEmployeeFields()
 {
-    reviewButton->setEnabled(true); editEmployeeButton->setEnabled(true);
+    reviewButton->setEnabled(true);
+    editEmployeeButton->setEnabled(true);
     removeEmployeeButton->setEnabled(true);
     findEmployeeButton->setEnabled(true);
     previousEmployeeButton->setEnabled(true);
