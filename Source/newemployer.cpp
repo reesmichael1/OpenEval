@@ -78,15 +78,6 @@ void NewEmployer::cancel()
 
 void NewEmployer::submit()
 {
-    name = employerName->text();
-    address = employerAddress->text();
-    city = employerCity->text();
-    state = employerState->text();
-    zipCode = employerZipCode->text();
-    phone = employerPhone->text();
-    eMail = employerEMail->text();
-    contact = employerContact->text();
-    employerName->setFocus();
     writeEmployerData();
     clearFields();
 }
@@ -95,8 +86,10 @@ void NewEmployer::writeEmployerData()
 {
     employerDataFile->open(QIODevice::Text | QIODevice::WriteOnly | QIODevice::Append);
 
-    employerData->operator <<("") << employerID << "," << name << "," << address << "," << city << "," <<
-                                     state << "," << zipCode << "," << phone << "," << eMail << "," << contact << endl;
+    employerData->operator <<(employerID) << "," << employerName->text() << "," << employerAddress->text()
+                        << "," << employerCity->text() << "," << employerState->text()
+                        << "," << employerZipCode->text() << "," << employerPhone->text()
+                        << "," << employerEMail->text() << "," << employerContact->text() << endl;
 
     employerDataFile->close();
 
@@ -134,4 +127,6 @@ void NewEmployer::clearFields()
     employerPhone->setText("");
     employerEMail->setText("");
     employerContact->setText("");
+
+    employerName->setFocus();
 }

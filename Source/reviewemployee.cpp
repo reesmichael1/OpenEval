@@ -8,6 +8,11 @@ ReviewEmployee::ReviewEmployee(QWidget *parent)
     evaluationResultsDataFile = new QFile("/Users/ladmin/Documents/OpenEval/Files/EVALUATIONRESULTS.txt");
     evaluationResults = new QTextStream(evaluationResultsDataFile);
 
+    evaluationIDFile = new QFile("/Users/ladmin/Documents/OpenEval/Files/EVALUATIONID.txt");
+    evaluationID = new QTextStream(evaluationIDFile);
+
+    assignEvaluationID();
+
     QLabel *employeeNameLabel = new QLabel(tr("Employee Name"));
     employeeName = new QLineEdit;
     employeeName->setReadOnly(true);
@@ -61,6 +66,19 @@ ReviewEmployee::ReviewEmployee(QWidget *parent)
     averageScore->setReadOnly(true);
     averageScore->setMaximumWidth(55);
 
+    QLabel *overallCommentsLabel = new QLabel(tr("Overall Comments"));
+    overallComments = new QLineEdit;
+    overallComments->setMaxLength(256);
+
+    QLabel *overallProgressLabel = new QLabel(tr("Overall Progress"));
+    overallProgress = new QSpinBox;
+    overallProgress->setMaximumWidth(55);
+
+    QLabel *recommendationLabel = new QLabel(tr("Employment Recommendation"));
+    employmentRecommendation = new QComboBox;
+    employmentRecommendation->addItem("Yes");
+    employmentRecommendation->addItem("No");
+
     QLabel *currentDateLabel = new QLabel(tr("Current Date"));
     currentEvaluationDate = new QCalendarWidget;
 
@@ -70,9 +88,12 @@ ReviewEmployee::ReviewEmployee(QWidget *parent)
     cancelButton = new QPushButton(tr("Cancel"));
     connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancel()));
 
+    averageButton = new QPushButton(tr("Calculate Average"));
+    connect(averageButton, SIGNAL(clicked()), this, SLOT(setAverageScore()));
+
     submitButton = new QPushButton(tr("Submit"));
-    connect(submitButton, SIGNAL(clicked()), this, SLOT(submit()));
     connect(submitButton, SIGNAL(clicked()), this, SLOT(accept()));
+    connect(submitButton, SIGNAL(clicked()), this, SLOT(submit()));
 
     QGridLayout *evaluationLayout = new QGridLayout;
     evaluationLayout->addWidget(employeeNameLabel, 0, 0);
@@ -91,6 +112,15 @@ ReviewEmployee::ReviewEmployee(QWidget *parent)
     evaluationLayout->addWidget(behaviorLabel, 4, 0);
     evaluationLayout->addWidget(behaviorScore, 4, 1);
     evaluationLayout->addWidget(behaviorComments, 4, 2, 1, 6);
+    evaluationLayout->addWidget(averageLabel, 5, 0);
+    evaluationLayout->addWidget(averageScore, 5, 1);
+    evaluationLayout->addWidget(overallCommentsLabel, 5, 2);
+    evaluationLayout->addWidget(overallComments, 5, 3, 1, 5);
+    evaluationLayout->addWidget(overallProgressLabel, 6, 0);
+    evaluationLayout->addWidget(overallProgress, 6, 1);
+    evaluationLayout->addWidget(recommendationLabel, 6, 6);
+    evaluationLayout->addWidget(employmentRecommendation, 6, 7);
+
 
     QHBoxLayout *calendarLayout = new QHBoxLayout;
 
@@ -102,6 +132,7 @@ ReviewEmployee::ReviewEmployee(QWidget *parent)
     QHBoxLayout *buttonLayout = new QHBoxLayout;
 
     buttonLayout->addWidget(cancelButton);
+    buttonLayout->addWidget(averageButton);
     buttonLayout->addWidget(submitButton);
 
     QGridLayout *mainLayout = new QGridLayout;
@@ -116,11 +147,27 @@ ReviewEmployee::ReviewEmployee(QWidget *parent)
 
 void ReviewEmployee::submit()
 {
-    int workQualityScore = qualityOfWorkScore->value();
+
+    setAverageScore();
 
     evaluationResultsDataFile->open(QIODevice::Text | QIODevice::WriteOnly | QIODevice::Append);
-    evaluationResults->operator<<(workQualityScore) << "," << endl;
+    evaluationResults->operator<<(currentEvaluationID) << "," << currentEmployeeID << "," << currentEmployerID << ","
+                    << currentEvaluationDate->selectedDate().toString(Qt::ISODate) << ","
+                    << nextEvaluationDate->selectedDate().toString(Qt::ISODate) << ","
+                    << qualityOfWorkScore->value() << "," << workQualityComments->text() << ","
+                    << workHabitsScore->value() << "," << workHabitsComments->text() << ","
+                    << jobKnowledgeScore->value() << "," << jobKnowledgeComments->text() << ","
+                    << behaviorScore->value() << "," << behaviorComments->text() << ","
+                    << averageScore->value() << "," << overallComments->text()
+                    << overallProgress->value() << "," << employmentRecommendation->currentText() << endl;
     evaluationResultsDataFile->close();
+
+    currentEvaluationID++;
+
+    evaluationIDFile->open(QIODevice::Text | QIODevice::WriteOnly | QIODevice::Truncate);
+    evaluationID->operator <<(currentEvaluationID);
+    evaluationIDFile->close();
+
     clearFields();
 }
 
@@ -128,6 +175,26 @@ void ReviewEmployee::cancel()
 {
     hide();
     clearFields();
+}
+
+void ReviewEmployee::assignEvaluationID()
+{
+
+    evaluationIDFile->open(QIODevice::Text | QIODevice::ReadWrite);
+    evaluationID = new QTextStream(evaluationIDFile);
+
+    QString evaluationIDString = evaluationID->readLine();
+
+    if (evaluationIDString == "")
+    {
+        currentEvaluationID = 1;
+    }
+    else
+    {
+        currentEvaluationID = evaluationIDString.toInt();
+    }
+
+    evaluationIDFile->close();
 }
 
 void ReviewEmployee::clearFields()
@@ -146,14 +213,16 @@ void ReviewEmployee::clearFields()
 
 }
 
-void ReviewEmployee::setEmployeeID(int employeeID)
+void ReviewEmployee::setIDValues(int employeeID, int employerID)
 {
     currentEmployeeID = employeeID;
+    currentEmployerID = employerID;
 }
 
-void ReviewEmployee::setEmployerID(int employerID)
+void ReviewEmployee::setFields()
 {
-    currentEmployerID = employerID;
+    setEmployeeName();
+    setEmployerName();
 }
 
 void ReviewEmployee::setEmployeeName()
@@ -197,4 +266,13 @@ void ReviewEmployee::setEmployerName()
 
     employerName->setText(employerNameString);
     employerDataFile.close();
+}
+
+void ReviewEmployee::setAverageScore()
+{
+    double dTotal = (qualityOfWorkScore->value() + workHabitsScore->value()
+         + jobKnowledgeScore->value() + behaviorScore->value());
+    double dAverage = dTotal/4;
+
+    averageScore->setValue(dAverage);
 }

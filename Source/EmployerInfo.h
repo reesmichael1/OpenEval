@@ -1,26 +1,31 @@
-#ifndef NEWEMPLOYER_H
-#define NEWEMPLOYER_H
+#ifndef EMPLOYERINFO_H
+#define EMPLOYERINFO_H
 
 #include <QDialog>
-#include <QFile>
 
 class QLineEdit;
-class QTextStream;
+class QDataList;
+class QPushButton;
 
-class NewEmployer : public QDialog
+class EmployerInfo : public QDialog
 {
+
     Q_OBJECT
 
 public:
-    NewEmployer(QWidget *parent = 0);
-    void clearFields();
+    EmployerInfo(QWidget *parent = 0);
+    enum Mode { ViewingMode, EditingMode};
+    void setEmployerID(int employerID);
+    void setFields();
+    void setMode(Mode currentMode);
 
 public slots:
-    void cancel();
-    void submit();
+    void editEmployer();
+    void cancelEdits();
+    void submitEdits();
 
 private:
-    int employerID;
+    int currentEmployerID;
     QString name;
     QString address;
     QString city;
@@ -37,15 +42,11 @@ private:
     QLineEdit *employerPhone;
     QLineEdit *employerEMail;
     QLineEdit *employerContact;
+    QPushButton *okButton;
+    QPushButton *editButton;
     QPushButton *submitButton;
     QPushButton *cancelButton;
-    QFile *employerDataFile;
-    QFile *employerIDDataFile;
-    QTextStream *employerData;
-    QTextStream *employerIDData;
-    void assignEmployerID();
-    void writeEmployerData();
-    void setReadOnly();
+    QStringList setEmployerDataList();
 };
 
-#endif // NEWEMPLOYER_H
+#endif // EMPLOYERINFO_H

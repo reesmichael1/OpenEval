@@ -10,6 +10,7 @@ class QDoubleSpinBox;
 class QCalendarWidget;
 class QFile;
 class QTextStream;
+class QComboBox;
 
 class ReviewEmployee : public QDialog
 {
@@ -17,19 +18,20 @@ class ReviewEmployee : public QDialog
 
 public:
     ReviewEmployee(QWidget *parent = 0);
-    void setEmployeeID(int employeeID);
-    void setEmployerID(int employerID);
-    void setEmployeeName();
-    void setEmployerName();
+    void setFields();
+    void setIDValues(int employeeID, int employerID);
 
 public slots:
     void cancel();
+    void setAverageScore();
     void submit();
 
 private:
     int currentEmployeeID;
     int currentEmployerID;
+    int currentEvaluationID;
     QPushButton *submitButton;
+    QPushButton *averageButton;
     QPushButton *cancelButton;
     QLineEdit *employeeName;
     QLineEdit *employerName;
@@ -37,18 +39,26 @@ private:
     QLineEdit *workHabitsComments;
     QLineEdit *jobKnowledgeComments;
     QLineEdit *behaviorComments;
+    QLineEdit *overallComments;
     QSpinBox *qualityOfWorkScore;
     QSpinBox *workHabitsScore;
     QSpinBox *jobKnowledgeScore;
     QSpinBox *behaviorScore;
+    QSpinBox *overallProgress;
     QDoubleSpinBox *averageScore;
+    QComboBox *employmentRecommendation;
     QFile *evaluationResultsDataFile;
+    QFile *evaluationIDFile;
     QTextStream *evaluationResults;
+    QTextStream *evaluationID;
     QCalendarWidget *currentEvaluationDate;
     QCalendarWidget *nextEvaluationDate;
     void clearFields();
     void assignEmployerID();
     void assignEmployeeID();
+    void assignEvaluationID();
+    void setEmployeeName();
+    void setEmployerName();
 };
 
 #endif // REVIEWEMPLOYEE_H

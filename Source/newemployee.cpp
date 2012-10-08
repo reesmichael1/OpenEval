@@ -171,14 +171,15 @@ void NewEmployee::employEmployee()
     employer = employeeEmployer->currentText();
     employerDataFile->open(QIODevice::Text | QIODevice::ReadOnly);
     QString employerNameString = employerDataFile->readLine();
-    while(!employerNameString.contains(employer))
+    QStringList employerDataList = employerNameString.split(',');
+    while(employerDataList.at(1) != employer)
     {
         employerNameString = employerDataFile->readLine();
+        employerDataList = employerNameString.split(',');
     }
 
     employerDataFile->close();
 
-    QStringList employerDataList = employerNameString.split(',');
     int employerID = employerDataList.at(0).toInt();
 
     fieldPlacementsFile->open(QIODevice::Text | QIODevice::WriteOnly | QIODevice::Append);
@@ -197,4 +198,6 @@ void NewEmployee::clearFields()
     employeePhone->setText("");
     employeeCell->setText("");
     employeeEMail->setText("");
+
+    employeeFirstName->setFocus();
 }

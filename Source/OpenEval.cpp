@@ -70,6 +70,7 @@ OpenEval::OpenEval()
     employeeInfoButton = new QPushButton(tr("Employee Info"));
 
     employerInfoButton = new QPushButton(tr("Employer Info"));
+    connect(employerInfoButton, SIGNAL(clicked()), this, SLOT(showEmployerInfo()));
 
     nextEmployeeButton = new QPushButton(tr("Next Employee"));
     connect(nextEmployeeButton, SIGNAL(clicked()), this, SLOT(setNextEmployee()));
@@ -86,6 +87,7 @@ OpenEval::OpenEval()
     editEmployeeButton = new QPushButton(tr("Edit Employee"));
 
     editEmployerButton = new QPushButton(tr("Edit Employer"));
+    connect(editEmployerButton, SIGNAL(clicked()), this, SLOT(editEmployer()));
 
     removeEmployeeButton = new QPushButton(tr("Remove Employee"));
 
@@ -237,20 +239,6 @@ void OpenEval::addEmployer()
 
 void OpenEval::removeEmployee()
 {
-}
-
-//Set the average score box to display the average score. This needs to be implemented someday, but probably in a very different form.
-void OpenEval::submitEmployee()
-{
-    int nWorkQuality = qualityOfWorkScore->value();
-    int nWorkHabits = workHabitsScore->value();
-    int nJobKnowledge = jobKnowledgeScore->value();
-    int nBehavior = behaviorScore->value();
-
-    double dTotal = (nWorkQuality + nWorkHabits + nJobKnowledge + nBehavior);
-    double dAverage = dTotal/4;
-
-    averageScore->setValue(dAverage);
 }
 
 QVector<int> OpenEval::generateEmployeeIDVector()
@@ -473,11 +461,24 @@ void OpenEval::setPreviousEmployer()
 
 void OpenEval::reviewEmployee()
 {
-    reviewEmployeeWindow.setEmployeeID(currentEmployeeID);
-    reviewEmployeeWindow.setEmployerID(currentEmployerID);
-    reviewEmployeeWindow.setEmployeeName();
-    reviewEmployeeWindow.setEmployerName();
+    reviewEmployeeWindow.setIDValues(currentEmployeeID, currentEmployerID);
+    reviewEmployeeWindow.setFields();
     reviewEmployeeWindow.show();
+}
+
+void OpenEval::showEmployerInfo()
+{
+    employerInfoWindow.setEmployerID(currentEmployerID);
+    employerInfoWindow.setFields();
+    employerInfoWindow.show();
+}
+
+void OpenEval::editEmployer()
+{
+    employerInfoWindow.setEmployerID(currentEmployerID);
+    employerInfoWindow.setFields();
+    employerInfoWindow.setMode(EmployerInfo::EditingMode);
+    employerInfoWindow.show();
 }
 
 //Set the Employer Name field to display the current employer's name.

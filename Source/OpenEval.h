@@ -6,6 +6,7 @@
 #include "NewEmployee.h"
 #include "NewEmployer.h"
 #include "ReviewEmployee.h"
+#include "EmployerInfo.h"
 
 class OpenEval : public QWidget
 {
@@ -17,7 +18,6 @@ public:
     int returnEmployerID();
 
 public slots:
-    void submitEmployee();
     void addEmployee();
     void addEmployer();
     void removeEmployee();
@@ -27,6 +27,8 @@ public slots:
     void setNextEmployer();
     void setFields();
     void reviewEmployee();
+    void showEmployerInfo();
+    void editEmployer();
 
 private:
     QLineEdit *employeeName;
@@ -62,6 +64,7 @@ private:
     NewEmployee newEmployeeWindow;
     NewEmployer newEmployerWindow;
     ReviewEmployee reviewEmployeeWindow;
+    EmployerInfo employerInfoWindow;
     int currentEmployeeID;
     int currentEmployerID;
     bool employeeDataFileEmpty;
