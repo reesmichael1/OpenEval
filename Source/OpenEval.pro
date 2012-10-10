@@ -3,7 +3,8 @@ HEADERS += \
     NewEmployee.h \
     NewEmployer.h \
     ReviewEmployee.h \
-    EmployerInfo.h
+    EmployerInfo.h \
+    EmployeeInfo.h
 
 SOURCES += \
     main.cpp \
@@ -11,4 +12,5 @@ SOURCES += \
     newemployee.cpp \
     newemployer.cpp \
     reviewemployee.cpp \
-    employerinfo.cpp
+    employerinfo.cpp \
+    employeeinfo.cpp

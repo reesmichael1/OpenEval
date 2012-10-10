@@ -68,6 +68,7 @@ OpenEval::OpenEval()
     connect(addEmployerButton, SIGNAL(clicked()), this, SLOT(addEmployer()));
 
     employeeInfoButton = new QPushButton(tr("Employee Info"));
+    connect(employeeInfoButton, SIGNAL(clicked()), this, SLOT(showEmployeeInfo()));
 
     employerInfoButton = new QPushButton(tr("Employer Info"));
     connect(employerInfoButton, SIGNAL(clicked()), this, SLOT(showEmployerInfo()));
@@ -464,6 +465,13 @@ void OpenEval::reviewEmployee()
     reviewEmployeeWindow.setIDValues(currentEmployeeID, currentEmployerID);
     reviewEmployeeWindow.setFields();
     reviewEmployeeWindow.show();
+}
+
+void OpenEval::showEmployeeInfo()
+{
+    employeeInfoWindow.setIDValues(currentEmployeeID, currentEmployerID);
+    employeeInfoWindow.setFields();
+    employeeInfoWindow.show();
 }
 
 void OpenEval::showEmployerInfo()
