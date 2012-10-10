@@ -43,12 +43,13 @@ private:
     QSpinBox *workHabitsScore;
     QSpinBox *jobKnowledgeScore;
     QSpinBox *behaviorScore;
-    QSpinBox *overallProgress;
+    QSpinBox *overallProgressScore;
     QDoubleSpinBox *averageScore;
     QCalendarWidget *currentEvaluationDate;
     QCalendarWidget *nextEvaluationDate;
     QPushButton *okButton;
     QPushButton *reviewDatesButton;
+    QPushButton *editButton;
     QDialog *reviewDatesDialog;
 };
 

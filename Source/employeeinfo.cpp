@@ -104,9 +104,9 @@ EmployeeInfo::EmployeeInfo(QWidget *parent)
     overallComments->setReadOnly(true);
 
     QLabel *overallProgressLabel = new QLabel(tr("Overall Progress"));
-    overallProgress = new QSpinBox;
-    overallProgress->setMaximumWidth(55);
-    overallProgress->setReadOnly(true);
+    overallProgressScore = new QSpinBox;
+    overallProgressScore->setMaximumWidth(55);
+    overallProgressScore->setReadOnly(true);
 
     QLabel *recommendationLabel = new QLabel(tr("Employment Recommendation"));
     employmentRecommendation = new QLineEdit;
@@ -125,6 +125,11 @@ EmployeeInfo::EmployeeInfo(QWidget *parent)
     reviewDatesButton = new QPushButton(tr("Dates for Employee Reviews"));
     connect(reviewDatesButton, SIGNAL(clicked()), this, SLOT(showReviewDates()));
 
+    editButton = new QPushButton(tr("Edit Employee"));
+
+    okButton = new QPushButton(tr("OK"));
+    connect(okButton, SIGNAL(clicked()), this, SLOT(accept()));
+
     reviewDatesDialog = new QDialog();
 
     QHBoxLayout *reviewDatesLayout = new QHBoxLayout(reviewDatesDialog);
@@ -133,15 +138,10 @@ EmployeeInfo::EmployeeInfo(QWidget *parent)
     reviewDatesLayout->addWidget(nextDateLabel);
     reviewDatesLayout->addWidget(nextEvaluationDate);
 
-/*
-    QHBoxLayout *calendarLayout = new QHBoxLayout;
-    calendarLayout->addWidget(currentDateLabel);
-    calendarLayout->addWidget(currentEvaluationDate);
-    calendarLayout->addWidget(nextDateLabel);
-    calendarLayout->addWidget(nextEvaluationDate);*/
-
     QHBoxLayout *buttonLayout = new QHBoxLayout;
     buttonLayout->addWidget(reviewDatesButton);
+    buttonLayout->addWidget(editButton);
+    buttonLayout->addWidget(okButton);
 
     QGridLayout *mainLayout = new QGridLayout;
     mainLayout->addWidget(firstNameLabel, 0, 0);
@@ -181,7 +181,7 @@ EmployeeInfo::EmployeeInfo(QWidget *parent)
     mainLayout->addWidget(overallCommentsLabel, 9, 2);
     mainLayout->addWidget(overallComments, 9, 3, 1, 7);
     mainLayout->addWidget(overallProgressLabel, 10, 0);
-    mainLayout->addWidget(overallProgress, 10, 1);
+    mainLayout->addWidget(overallProgressScore, 10, 1);
     mainLayout->addWidget(recommendationLabel, 10, 7);
     mainLayout->addWidget(employmentRecommendation, 10, 8);
     mainLayout->addLayout(buttonLayout, 11, 1, 1, 9);
@@ -200,6 +200,79 @@ void EmployeeInfo::setFields()
 {
     QFile employeeDataFile("/Users/ladmin/Documents/OpenEval/Files/EMPLOYEES.txt");
     QTextStream employeeData(&employeeDataFile);
+
+    employeeDataFile.open(QIODevice::Text | QIODevice::ReadOnly);
+
+    QString employeeDataString = employeeData.readLine();
+    QStringList employeeDataList = employeeDataString.split(',');
+
+    while (employeeDataList.at(0).toInt() != currentEmployeeID)
+    {
+        employeeDataString = employeeData.readLine();
+        employeeDataList = employeeDataString.split(',');
+    }
+
+    employeeDataFile.close();
+
+    employeeFirstName->setText(employeeDataList.at(1));
+    employeeLastName->setText(employeeDataList.at(2));
+    employeeEMail->setText(employeeDataList.at(3));
+    employeePhone->setText(employeeDataList.at(4));
+    employeeCell->setText(employeeDataList.at(5));
+    employeeAddress->setText(employeeDataList.at(6));
+    employeeCity->setText(employeeDataList.at(7));
+    employeeState->setText(employeeDataList.at(8));
+    employeeZipCode->setText(employeeDataList.at(9));
+
+    QFile employerDataFile("/Users/ladmin/Documents/OpenEval/Files/EMPLOYERS.txt");
+    QTextStream employerData(&employerDataFile);
+
+    employerDataFile.open(QIODevice::Text | QIODevice::ReadOnly);
+
+    QString employerDataString = employerData.readLine();
+    QStringList employerDataList = employerDataString.split(',');
+
+    while (employerDataList.at(0).toInt() != currentEmployerID)
+    {
+        employerDataString = employerData.readLine();
+        employerDataList = employerDataString.split(',');
+    }
+
+    employerDataFile.close();
+
+    employeeEmployer->setText(employerDataList.at(1));
+
+    QFile evaluationResultsFile("/Users/ladmin/Documents/OpenEval/Files/EVALUATIONRESULTS.txt");
+    QTextStream evaluationResults(&evaluationResultsFile);
+
+    evaluationResultsFile.open(QIODevice::Text | QIODevice::ReadOnly);
+
+    QString evaluationResultsString = evaluationResults.readLine();
+    QStringList evaluationResultsList = evaluationResultsString.split(',');
+
+    while (evaluationResultsString != "")
+    {
+        if (evaluationResultsList.at(1).toInt() == currentEmployeeID)
+        {
+            qualityOfWorkScore->setValue(evaluationResultsList.at(5).toInt());
+            workQualityComments->setText(evaluationResultsList.at(6));
+            workHabitsScore->setValue(evaluationResultsList.at(7).toInt());
+            workHabitsComments->setText(evaluationResultsList.at(8));
+            jobKnowledgeScore->setValue(evaluationResultsList.at(9).toInt());
+            jobKnowledgeComments->setText(evaluationResultsList.at(10));
+            behaviorScore->setValue(evaluationResultsList.at(11).toInt());
+            behaviorComments->setText(evaluationResultsList.at(12));
+            averageScore->setValue(evaluationResultsList.at(13).toDouble());
+            overallComments->setText(evaluationResultsList.at(14));
+            overallProgressScore->setValue(evaluationResultsList.at(15).toInt());
+            employmentRecommendation->setText(evaluationResultsList.at(16));
+        }
+        evaluationResultsString = evaluationResults.readLine();
+        evaluationResultsList = evaluationResultsString.split(',');
+    }
+
+    evaluationResultsFile.close();
+
 }
 
 void EmployeeInfo::showReviewDates()

@@ -158,7 +158,7 @@ void ReviewEmployee::submit()
                     << workHabitsScore->value() << "," << workHabitsComments->text() << ","
                     << jobKnowledgeScore->value() << "," << jobKnowledgeComments->text() << ","
                     << behaviorScore->value() << "," << behaviorComments->text() << ","
-                    << averageScore->value() << "," << overallComments->text()
+                    << averageScore->value() << "," << overallComments->text() << ","
                     << overallProgress->value() << "," << employmentRecommendation->currentText() << endl;
     evaluationResultsDataFile->close();
 
