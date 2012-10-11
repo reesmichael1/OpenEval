@@ -129,6 +129,7 @@ EmployeeInfo::EmployeeInfo(QWidget *parent)
 
     okButton = new QPushButton(tr("OK"));
     connect(okButton, SIGNAL(clicked()), this, SLOT(accept()));
+    connect(okButton, SIGNAL(clicked()), this, SLOT(clearFields()));
 
     reviewDatesDialog = new QDialog();
 
@@ -278,4 +279,20 @@ void EmployeeInfo::setFields()
 void EmployeeInfo::showReviewDates()
 {
     reviewDatesDialog->show();
+}
+
+void EmployeeInfo::clearFields()
+{
+    qualityOfWorkScore->setValue(1);
+    workQualityComments->setText("");
+    workHabitsScore->setValue(1);
+    workHabitsComments->setText("");
+    jobKnowledgeScore->setValue(1);
+    jobKnowledgeComments->setText("");
+    behaviorScore->setValue(1);
+    behaviorComments->setText("");
+    averageScore->setValue(1);
+    overallComments->setText("");
+    overallProgressScore->setValue(1);
+    employmentRecommendation->setText("");
 }

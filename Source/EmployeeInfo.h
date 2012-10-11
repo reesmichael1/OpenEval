@@ -18,6 +18,7 @@ public:
     void setIDValues(int employeeID, int employerID);
 
 public slots:
+    void clearFields();
     void showReviewDates();
 
 private:
