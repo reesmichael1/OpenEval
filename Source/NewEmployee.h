@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QFile>
+#include "FileOperations.h"
 
 class QLineEdit;
 class QTextStream;
@@ -23,16 +24,6 @@ public slots:
 
 private:
     int employeeID;
-    QString firstName;
-    QString lastName;
-    QString address;
-    QString city;
-    QString state;
-    QString zipCode;
-    QString phone;
-    QString cell;
-    QString eMail;
-    QString employer;
     QLineEdit *employeeFirstName;
     QLineEdit *employeeLastName;
     QLineEdit *employeeAddress;

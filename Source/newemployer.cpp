@@ -4,8 +4,8 @@
 NewEmployer::NewEmployer(QWidget *parent)
     : QDialog(parent)
 {
-    employerDataFile = new QFile("/Users/ladmin/Documents/OpenEval/Files/EMPLOYERS.txt");
-    employerIDDataFile = new QFile("/Users/ladmin/Documents/OpenEval/Files/EMPLOYERID.txt");
+    employerDataFile = new QFile(EMPLOYERFILE);
+    employerIDDataFile = new QFile(EMPLOYERIDFILE);
 
     //Declare streams to read and write the next employer ID.
     employerIDData = new QTextStream(employerIDDataFile);

@@ -2,6 +2,7 @@
 #define REVIEWEMPLOYEE_H
 
 #include <QDialog>
+#include "FileOperations.h"
 
 class QPushButton;
 class QLineEdit;

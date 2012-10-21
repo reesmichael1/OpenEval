@@ -112,37 +112,38 @@ EmployeeInfo::EmployeeInfo(QWidget *parent)
     employmentRecommendation = new QLineEdit;
     employmentRecommendation->setReadOnly(true);
 
-    QLabel *currentDateLabel = new QLabel(tr("Previous Evaluation"));
-    currentEvaluationDate = new QCalendarWidget;
-    currentEvaluationDate->setEnabled(false);
-    currentEvaluationDate->setDateEditEnabled(false);
+    previousEvaluationDate = new QCalendarWidget;
+    previousEvaluationDate->setSelectionMode(QCalendarWidget::NoSelection);
+    previousEvaluationDate->setVerticalHeaderFormat(QCalendarWidget::NoVerticalHeader);
 
-    QLabel *nextDateLabel = new QLabel(tr("Next Evaluation"));
     nextEvaluationDate = new QCalendarWidget;
-    nextEvaluationDate->setEnabled(false);
-    nextEvaluationDate->setDateEditEnabled(false);
+    nextEvaluationDate->setSelectionMode(QCalendarWidget::NoSelection);
+    nextEvaluationDate->setVerticalHeaderFormat(QCalendarWidget::NoVerticalHeader);
 
     reviewDatesButton = new QPushButton(tr("Dates for Employee Reviews"));
     connect(reviewDatesButton, SIGNAL(clicked()), this, SLOT(showReviewDates()));
 
     editButton = new QPushButton(tr("Edit Employee"));
+    connect(editButton, SIGNAL(clicked()), this, SLOT(editEmployee()));
+
+    submitButton = new QPushButton(tr("Submit Edits"));
+    connect(submitButton, SIGNAL(clicked()), this, SLOT(submitEdits()));
+    submitButton->setVisible(false);
 
     okButton = new QPushButton(tr("OK"));
     connect(okButton, SIGNAL(clicked()), this, SLOT(accept()));
     connect(okButton, SIGNAL(clicked()), this, SLOT(clearFields()));
 
-    reviewDatesDialog = new QDialog();
-
-    QHBoxLayout *reviewDatesLayout = new QHBoxLayout(reviewDatesDialog);
-    reviewDatesLayout->addWidget(currentDateLabel);
-    reviewDatesLayout->addWidget(currentEvaluationDate);
-    reviewDatesLayout->addWidget(nextDateLabel);
-    reviewDatesLayout->addWidget(nextEvaluationDate);
+    cancelButton = new QPushButton(tr("Cancel"));
+    connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancelEdits()));
+    cancelButton->setVisible(false);
 
     QHBoxLayout *buttonLayout = new QHBoxLayout;
     buttonLayout->addWidget(reviewDatesButton);
     buttonLayout->addWidget(editButton);
+    buttonLayout->addWidget(submitButton);
     buttonLayout->addWidget(okButton);
+    buttonLayout->addWidget(cancelButton);
 
     QGridLayout *mainLayout = new QGridLayout;
     mainLayout->addWidget(firstNameLabel, 0, 0);
@@ -183,10 +184,9 @@ EmployeeInfo::EmployeeInfo(QWidget *parent)
     mainLayout->addWidget(overallComments, 9, 3, 1, 7);
     mainLayout->addWidget(overallProgressLabel, 10, 0);
     mainLayout->addWidget(overallProgressScore, 10, 1);
-    mainLayout->addWidget(recommendationLabel, 10, 7);
-    mainLayout->addWidget(employmentRecommendation, 10, 8);
+    mainLayout->addWidget(recommendationLabel, 10, 8);
+    mainLayout->addWidget(employmentRecommendation, 10, 9);
     mainLayout->addLayout(buttonLayout, 11, 1, 1, 9);
-    //mainLayout->addLayout(calendarLayout, 11, 1, 1, 7);
 
     setLayout(mainLayout);
 }
@@ -199,21 +199,10 @@ void EmployeeInfo::setIDValues(int employeeID, int employerID)
 
 void EmployeeInfo::setFields()
 {
-    QFile employeeDataFile("/Users/ladmin/Documents/OpenEval/Files/EMPLOYEES.txt");
-    QTextStream employeeData(&employeeDataFile);
-
-    employeeDataFile.open(QIODevice::Text | QIODevice::ReadOnly);
-
-    QString employeeDataString = employeeData.readLine();
+    QFile employeeDataFile(EMPLOYEEFILE);
+    QString employeeDataString = returnDataString(&employeeDataFile, currentEmployeeID);
     QStringList employeeDataList = employeeDataString.split(',');
 
-    while (employeeDataList.at(0).toInt() != currentEmployeeID)
-    {
-        employeeDataString = employeeData.readLine();
-        employeeDataList = employeeDataString.split(',');
-    }
-
-    employeeDataFile.close();
 
     employeeFirstName->setText(employeeDataList.at(1));
     employeeLastName->setText(employeeDataList.at(2));
@@ -225,7 +214,9 @@ void EmployeeInfo::setFields()
     employeeState->setText(employeeDataList.at(8));
     employeeZipCode->setText(employeeDataList.at(9));
 
-    QFile employerDataFile("/Users/ladmin/Documents/OpenEval/Files/EMPLOYERS.txt");
+    QFile employerDataFile(EMPLOYERFILE);
+
+/*
     QTextStream employerData(&employerDataFile);
 
     employerDataFile.open(QIODevice::Text | QIODevice::ReadOnly);
@@ -241,9 +232,15 @@ void EmployeeInfo::setFields()
 
     employerDataFile.close();
 
+*/
+
+    QString employerDataString = returnDataString(&employerDataFile, currentEmployerID);
+    QStringList employerDataList = employerDataString.split(',');
+
+
     employeeEmployer->setText(employerDataList.at(1));
 
-    QFile evaluationResultsFile("/Users/ladmin/Documents/OpenEval/Files/EVALUATIONRESULTS.txt");
+    QFile evaluationResultsFile(EVALUATIONRESULTSFILE);
     QTextStream evaluationResults(&evaluationResultsFile);
 
     evaluationResultsFile.open(QIODevice::Text | QIODevice::ReadOnly);
@@ -255,6 +252,9 @@ void EmployeeInfo::setFields()
     {
         if (evaluationResultsList.at(1).toInt() == currentEmployeeID)
         {
+
+            previousEvaluationDate->setSelectedDate(QDate::fromString(evaluationResultsList.at(3)));
+            nextEvaluationDate->setSelectedDate(QDate::fromString(evaluationResultsList.at(4)));
             qualityOfWorkScore->setValue(evaluationResultsList.at(5).toInt());
             workQualityComments->setText(evaluationResultsList.at(6));
             workHabitsScore->setValue(evaluationResultsList.at(7).toInt());
@@ -278,6 +278,17 @@ void EmployeeInfo::setFields()
 
 void EmployeeInfo::showReviewDates()
 {
+    QLabel *previousDateLabel = new QLabel(tr("Previous Evaluation"));
+    QLabel *nextDateLabel = new QLabel(tr("Next Evaluation"));
+
+    reviewDatesDialog = new QDialog();
+
+    QHBoxLayout *reviewDatesLayout = new QHBoxLayout(reviewDatesDialog);
+    reviewDatesLayout->addWidget(previousDateLabel);
+    reviewDatesLayout->addWidget(previousEvaluationDate);
+    reviewDatesLayout->addWidget(nextDateLabel);
+    reviewDatesLayout->addWidget(nextEvaluationDate);
+
     reviewDatesDialog->show();
 }
 
@@ -295,4 +306,73 @@ void EmployeeInfo::clearFields()
     overallComments->setText("");
     overallProgressScore->setValue(1);
     employmentRecommendation->setText("");
+}
+
+void EmployeeInfo::editEmployee()
+{
+    updateMode(EditingMode);
+}
+
+void EmployeeInfo::submitEdits()
+{
+    updateMode(ViewingMode);
+
+    QFile employeeDataFile(EMPLOYEEFILE);
+
+    removeEntity(&employeeDataFile, currentEmployeeID, 0);
+
+    QTextStream employeeData(&employeeDataFile);
+
+    employeeDataFile.open(QIODevice::Text | QIODevice::WriteOnly | QIODevice::Append);
+    employeeData << currentEmployeeID << "," << employeeFirstName->text() << "," << employeeLastName->text()
+                            << "," << employeeEMail->text() << "," << employeePhone->text()
+                            << "," << employeeCell->text() << "," << employeeAddress->text()
+                            << "," << employeeCity->text() << "," << employeeState->text()
+                            << "," << employeeZipCode->text() << endl;
+
+    employeeDataFile.close();
+}
+
+void EmployeeInfo::cancelEdits()
+{
+    updateMode(ViewingMode);
+    setFields();
+}
+
+void EmployeeInfo::updateMode(Mode currentMode)
+{
+    if (currentMode == EditingMode)
+    {
+        editButton->setVisible(false);
+        okButton->setVisible(false);
+        employeeFirstName->setReadOnly(false);
+        employeeLastName->setReadOnly(false);
+        employeePhone->setReadOnly(false);
+        employeeCell->setReadOnly(false);
+        employeeAddress->setReadOnly(false);
+        employeeCity->setReadOnly(false);
+        employeeState->setReadOnly(false);
+        employeeZipCode->setReadOnly(false);
+        employeeEMail->setReadOnly(false);
+        reviewDatesButton->setEnabled(false);
+        cancelButton->setVisible(true);
+        submitButton->setVisible(true);
+    }
+    else
+    {
+        submitButton->setVisible(false);
+        cancelButton->setVisible(false);
+        employeeFirstName->setReadOnly(true);
+        employeeLastName->setReadOnly(true);
+        employeePhone->setReadOnly(true);
+        employeeCell->setReadOnly(true);
+        employeeAddress->setReadOnly(true);
+        employeeCity->setReadOnly(true);
+        employeeState->setReadOnly(true);
+        employeeZipCode->setReadOnly(true);
+        employeeEMail->setReadOnly(true);
+        reviewDatesButton->setEnabled(true);
+        okButton->setVisible(true);
+        editButton->setVisible(true);
+    }
 }

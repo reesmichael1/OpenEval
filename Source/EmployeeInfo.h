@@ -2,24 +2,30 @@
 #define EMPLOYEEINFO_H
 
 #include <QDialog>
+#include "FileOperations.h"
 
 class QLineEdit;
 class QSpinBox;
 class QDoubleSpinBox;
 class QCalendarWidget;
 
-class EmployeeInfo : public QDialog
+class EmployeeInfo : public QDialog, private FileOperations
 {
     Q_OBJECT
 
 public:
+    enum Mode {EditingMode, ViewingMode};
     EmployeeInfo(QWidget *parent = 0);
     void setFields();
     void setIDValues(int employeeID, int employerID);
+    void updateMode(Mode currentMode);
 
 public slots:
     void clearFields();
     void showReviewDates();
+    void editEmployee();
+    void submitEdits();
+    void cancelEdits();
 
 private:
     int currentEmployeeID;
@@ -46,11 +52,13 @@ private:
     QSpinBox *behaviorScore;
     QSpinBox *overallProgressScore;
     QDoubleSpinBox *averageScore;
-    QCalendarWidget *currentEvaluationDate;
+    QCalendarWidget *previousEvaluationDate;
     QCalendarWidget *nextEvaluationDate;
     QPushButton *okButton;
+    QPushButton *cancelButton;
     QPushButton *reviewDatesButton;
     QPushButton *editButton;
+    QPushButton *submitButton;
     QDialog *reviewDatesDialog;
 };
 

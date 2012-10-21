@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QFile>
+#include "FileOperations.h"
 
 class QLineEdit;
 class QTextStream;

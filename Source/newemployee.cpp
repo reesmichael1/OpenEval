@@ -5,10 +5,10 @@ NewEmployee::NewEmployee(QWidget *parent)
     : QDialog(parent)
 {
 
-    employerDataFile = new QFile("/Users/ladmin/Documents/OpenEval/Files/EMPLOYERS.txt");
-    employeeDataFile = new QFile("/Users/ladmin/Documents/OpenEval/Files/EMPLOYEES.txt");
-    employeeIDDataFile = new QFile("/Users/ladmin/Documents/OpenEval/Files/EMPLOYEEID.txt");
-    fieldPlacementsFile = new QFile("/Users/ladmin/Documents/OpenEval/Files/FIELDPLACEMENTS.txt");
+    employerDataFile = new QFile(EMPLOYERFILE);
+    employeeDataFile = new QFile(EMPLOYEEFILE);
+    employeeIDDataFile = new QFile(EMPLOYEEIDFILE);
+    fieldPlacementsFile = new QFile(FIELDPLACEMENTSFILE);
     employerData = new QTextStream(employerDataFile);
     employeeData = new QTextStream(employeeDataFile);
     employeeIDData = new QTextStream(employeeIDDataFile);
@@ -92,16 +92,6 @@ void NewEmployee::cancel()
 
 void NewEmployee::submit()
 {
-    firstName = employeeFirstName->text();
-    lastName = employeeLastName->text();
-    address = employeeAddress->text();
-    city = employeeCity->text();
-    state = employeeState->text();
-    zipCode = employeeZipCode->text();
-    phone = employeePhone->text();
-    cell = employeeCell->text();
-    eMail = employeeEMail->text();
-    employeeFirstName->setFocus();
     writeEmployeeData();
     clearFields();
 }
@@ -152,8 +142,11 @@ void NewEmployee::writeEmployeeData()
 {
 
     employeeDataFile->open(QIODevice::Text | QIODevice::WriteOnly | QIODevice::Append);
-    employeeData->operator <<(employeeID) << "," << firstName << "," << lastName << "," << eMail << "," << phone << "," <<
-                                     cell << "," << address << "," << city << "," << state << "," << zipCode << endl;
+    employeeData->operator <<(employeeID) << "," << employeeFirstName->text() << "," << employeeLastName->text()
+                            << "," << employeeEMail->text() << "," << employeePhone->text()
+                            << "," << employeeCell->text() << "," << employeeAddress->text()
+                            << "," << employeeCity->text() << "," << employeeState->text()
+                            << "," << employeeZipCode->text() << endl;
 
     employeeDataFile->close();
 
@@ -168,7 +161,7 @@ void NewEmployee::writeEmployeeData()
 
 void NewEmployee::employEmployee()
 {
-    employer = employeeEmployer->currentText();
+    QString employer = employeeEmployer->currentText();
     employerDataFile->open(QIODevice::Text | QIODevice::ReadOnly);
     QString employerNameString = employerDataFile->readLine();
     QStringList employerDataList = employerNameString.split(',');

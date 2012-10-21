@@ -5,10 +5,10 @@ ReviewEmployee::ReviewEmployee(QWidget *parent)
     : QDialog(parent)
 {
 
-    evaluationResultsDataFile = new QFile("/Users/ladmin/Documents/OpenEval/Files/EVALUATIONRESULTS.txt");
+    evaluationResultsDataFile = new QFile(EVALUATIONRESULTSFILE);
     evaluationResults = new QTextStream(evaluationResultsDataFile);
 
-    evaluationIDFile = new QFile("/Users/ladmin/Documents/OpenEval/Files/EVALUATIONID.txt");
+    evaluationIDFile = new QFile(EVALUATIONIDFILE);
     evaluationID = new QTextStream(evaluationIDFile);
 
     assignEvaluationID();
@@ -30,7 +30,6 @@ ReviewEmployee::ReviewEmployee(QWidget *parent)
 
     workQualityComments = new QLineEdit;
     workQualityComments->setMaxLength(256);
-
 
     QLabel *workHabitsLabel = new QLabel(tr("Work Habits:"));
     workHabitsLabel->setToolTip(tr("Attendance, organization, punctuality, and time on task."));
@@ -81,9 +80,11 @@ ReviewEmployee::ReviewEmployee(QWidget *parent)
 
     QLabel *currentDateLabel = new QLabel(tr("Current Date"));
     currentEvaluationDate = new QCalendarWidget;
+    currentEvaluationDate->setVerticalHeaderFormat(QCalendarWidget::NoVerticalHeader);
 
     QLabel *nextDateLabel = new QLabel(tr("Next Evaluation"));
     nextEvaluationDate = new QCalendarWidget;
+    nextEvaluationDate->setVerticalHeaderFormat(QCalendarWidget::NoVerticalHeader);
 
     cancelButton = new QPushButton(tr("Cancel"));
     connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancel()));
@@ -152,8 +153,8 @@ void ReviewEmployee::submit()
 
     evaluationResultsDataFile->open(QIODevice::Text | QIODevice::WriteOnly | QIODevice::Append);
     evaluationResults->operator<<(currentEvaluationID) << "," << currentEmployeeID << "," << currentEmployerID << ","
-                    << currentEvaluationDate->selectedDate().toString(Qt::ISODate) << ","
-                    << nextEvaluationDate->selectedDate().toString(Qt::ISODate) << ","
+                    << currentEvaluationDate->selectedDate().toString() << ","
+                    << nextEvaluationDate->selectedDate().toString() << ","
                     << qualityOfWorkScore->value() << "," << workQualityComments->text() << ","
                     << workHabitsScore->value() << "," << workHabitsComments->text() << ","
                     << jobKnowledgeScore->value() << "," << jobKnowledgeComments->text() << ","
@@ -228,7 +229,7 @@ void ReviewEmployee::setFields()
 void ReviewEmployee::setEmployeeName()
 {
 
-    QFile employeeDataFile("/Users/ladmin/Documents/OpenEval/Files/EMPLOYEES.txt");
+    QFile employeeDataFile(EMPLOYEEFILE);
     QTextStream employeeData(&employeeDataFile);
 
     employeeDataFile.open(QIODevice::Text | QIODevice::ReadOnly);
@@ -249,7 +250,7 @@ void ReviewEmployee::setEmployeeName()
 
 void ReviewEmployee::setEmployerName()
 {
-    QFile employerDataFile("/Users/ladmin/Documents/OpenEval/Files/EMPLOYERS.txt");
+    QFile employerDataFile(EMPLOYERFILE);
     QTextStream employerData(&employerDataFile);
 
     employerDataFile.open(QIODevice::Text | QIODevice::ReadOnly);

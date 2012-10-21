@@ -8,8 +8,11 @@
 #include "ReviewEmployee.h"
 #include "EmployerInfo.h"
 #include "EmployeeInfo.h"
+#include "FindEmployee.h"
+#include "FindEmployer.h"
+#include "FileOperations.h"
 
-class OpenEval : public QWidget
+class OpenEval : public QMainWindow, private FileOperations
 {
     Q_OBJECT
 
@@ -21,7 +24,6 @@ public:
 public slots:
     void addEmployee();
     void addEmployer();
-    void removeEmployee();
     void setNextEmployee();
     void setPreviousEmployee();
     void setPreviousEmployer();
@@ -30,7 +32,12 @@ public slots:
     void reviewEmployee();
     void showEmployerInfo();
     void showEmployeeInfo();
+    void editEmployee();
     void editEmployer();
+    void findEmployee();
+    void findEmployer();
+    void removeEmployee();
+    void removeEmployer();
 
 private:
     QLineEdit *employeeName;
@@ -55,8 +62,13 @@ private:
     QPushButton *findEmployerButton;
     QPushButton *reviewButton;
     QDoubleSpinBox *averageScore;
-    QString employeeString;
-    QString employerString;
+    QMenu *fileMenu;
+    QMenu *editMenu;
+    QAction *newEmployeeAction;
+    QAction *newEmployerAction;
+    QAction *editEmployerAction;
+    QKeySequence *newEmployerShortcut;
+    QWidget *centralWidget;
     QFile *employeeDataFile;
     QFile *employerDataFile;
     QFile *employerIDDataFile;
@@ -68,13 +80,13 @@ private:
     ReviewEmployee reviewEmployeeWindow;
     EmployerInfo employerInfoWindow;
     EmployeeInfo employeeInfoWindow;
+    FindEmployee findEmployeeWindow;
+    FindEmployer findEmployerWindow;
     int currentEmployeeID;
     int currentEmployerID;
-    bool employeeDataFileEmpty;
-    bool employerDataFileEmpty;
-    bool fieldPlacementsDataFileEmpty;
-    void updateEmployeeName();
+    void updateEmployeeFields();
     void updateEmployerName();
+    void updateReviewFields();
     void nextEmployerID();
     void nextEmployeeID();
     void previousEmployerID();
@@ -86,8 +98,8 @@ private:
     void enableEmployeeFields();
     void disableEmployerFields();
     void enableEmployerFields();
-    QVector<int> generateEmployeeIDVector();
-    QVector<int> generateEmployerIDVector();
+    void createActions();
+    void createMenus();
 };
 
 #endif // OPENEVAL

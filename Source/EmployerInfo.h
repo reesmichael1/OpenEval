@@ -2,19 +2,20 @@
 #define EMPLOYERINFO_H
 
 #include <QDialog>
+#include "FileOperations.h"
 
 class QLineEdit;
 class QDataList;
 class QPushButton;
 
-class EmployerInfo : public QDialog
+class EmployerInfo : public QDialog, private FileOperations
 {
 
     Q_OBJECT
 
 public:
     EmployerInfo(QWidget *parent = 0);
-    enum Mode { ViewingMode, EditingMode};
+    enum Mode {ViewingMode, EditingMode};
     void setEmployerID(int employerID);
     void setFields();
     void setMode(Mode currentMode);
@@ -46,7 +47,6 @@ private:
     QPushButton *editButton;
     QPushButton *submitButton;
     QPushButton *cancelButton;
-    QStringList setEmployerDataList();
 };
 
 #endif // EMPLOYERINFO_H

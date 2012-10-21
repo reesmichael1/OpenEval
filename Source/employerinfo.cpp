@@ -84,28 +84,11 @@ void EmployerInfo::setEmployerID(int employerID)
     currentEmployerID = employerID;
 }
 
-QStringList EmployerInfo::setEmployerDataList()
-{
-    QFile employerDataFile("/Users/ladmin/Documents/OpenEval/Files/EMPLOYERS.txt");
-    QTextStream employerData(&employerDataFile);
-
-    employerDataFile.open(QIODevice::Text | QIODevice::ReadOnly);
-
-    QString employerDataString = employerData.readLine();
-    QStringList employerDataList;
-
-        do
-        {
-            employerDataList = employerDataString.split(',');
-            employerDataString = employerData.readLine();
-        } while (employerDataList.at(0).toInt() != currentEmployerID);
-
-    return employerDataList;
-}
-
 void EmployerInfo::setFields()
 {
-    QStringList employerDataList = setEmployerDataList();
+    QFile employerDataFile(EMPLOYERFILE);
+    QString employerDataString = returnDataString(&employerDataFile, currentEmployerID);
+    QStringList employerDataList = employerDataString.split(',');
 
     employerName->setText(employerDataList.at(1));
     employerAddress->setText(employerDataList.at(2));
@@ -159,6 +142,18 @@ void EmployerInfo::setMode(Mode currentMode)
 
 void EmployerInfo::submitEdits()
 {
+    QFile employerDataFile(EMPLOYERFILE);
+    removeEntity(&employerDataFile, currentEmployerID, 0);
+    QTextStream employerData(&employerDataFile);
+
+    employerDataFile.open(QIODevice::Text | QIODevice::WriteOnly | QIODevice::Append);
+
+    employerData << currentEmployerID << "," << employerName->text() << "," << employerAddress->text()
+                        << "," << employerCity->text() << "," << employerState->text()
+                        << "," << employerZipCode->text() << "," << employerPhone->text()
+                        << "," << employerEMail->text() << "," << employerContact->text() << endl;
+
+    employerDataFile.close();
     setMode(ViewingMode);
 }
 
