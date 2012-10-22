@@ -1,14 +1,14 @@
 #ifndef FILEOPERATIONS_H
 #define FILEOPERATIONS_H
 
-#define EMPLOYERFILE "/Users/ladmin/Documents/OpenEval/Files/EMPLOYERS.txt"
-#define EMPLOYEEFILE "/Users/ladmin/Documents/OpenEval/Files/EMPLOYEES.txt"
-#define EMPLOYEEIDFILE "/Users/ladmin/Documents/OpenEval/Files/EMPLOYEEID.txt"
-#define EMPLOYERIDFILE "/Users/ladmin/Documents/OpenEval/Files/EMPLOYERID.txt"
-#define EVALUATIONRESULTSFILE "/Users/ladmin/Documents/OpenEval/Files/EVALUATIONRESULTS.txt"
-#define FIELDPLACEMENTSFILE "/Users/ladmin/Documents/OpenEval/Files/FIELDPLACEMENTS.txt"
-#define EVALUATIONIDFILE "/Users/ladmin/Documents/OpenEval/Files/EVALUATIONID.txt"
-#define FILEBACKUP "/Users/ladmin/Documents/OpenEval/Files/FileBackup.txt"
+#define EMPLOYERFILE "\\EMPLOYERS.txt"
+#define EMPLOYEEFILE "\\EMPLOYEES.txt"
+#define EMPLOYEEIDFILE "\\EMPLOYEEID.txt"
+#define EMPLOYERIDFILE "\\EMPLOYERID.txt"
+#define EVALUATIONRESULTSFILE "\\EVALUATIONRESULTS.txt"
+#define FIELDPLACEMENTSFILE "\\FIELDPLACEMENTS.txt"
+#define EVALUATIONIDFILE "\\EVALUATIONID.txt"
+#define FILEBACKUP "\\FileBackup.txt"
 
 #include <QFile>
 #include <QDialog>

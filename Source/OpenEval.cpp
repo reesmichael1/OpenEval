@@ -511,26 +511,34 @@ void OpenEval::findEmployer()
 void OpenEval::removeEmployee()
 {
 
-    int currentID = currentEmployeeID;
+    int button = QMessageBox::question(this, tr("Confirm Remove"), tr("Are you sure you want to remove %1?")
+                                       .arg(employeeName->text()), QMessageBox::Yes | QMessageBox::No);
 
-    setNextEmployee();
-
-    QFile fieldPlacementsFile(FIELDPLACEMENTSFILE);
-
-    removeEntity(employeeDataFile, currentID, 0);
-    removeEntity(&fieldPlacementsFile, currentID, 0);
-
-    QVector<int> employeeIDVector = generateEmployeeIDVector(currentEmployerID);
-    if (employeeIDVector.size() == 0)
+    if (button == QMessageBox::Yes)
     {
-        disableEmployeeFields();
-        currentEmployeeID = 0;
-        updateEmployeeFields();
-    }
 
-    else
-    {
-        updateEmployeeFields();
+        int currentID = currentEmployeeID;
+
+        setNextEmployee();
+
+        QFile fieldPlacementsFile(FIELDPLACEMENTSFILE);
+
+        removeEntity(employeeDataFile, currentID, 0);
+        removeEntity(&fieldPlacementsFile, currentID, 0);
+
+        QVector<int> employeeIDVector = generateEmployeeIDVector(currentEmployerID);
+        if (employeeIDVector.size() == 0)
+        {
+            disableEmployeeFields();
+            currentEmployeeID = 0;
+            updateEmployeeFields();
+        }
+
+        else
+        {
+            updateEmployeeFields();
+        }
+
     }
 
 }
@@ -538,44 +546,51 @@ void OpenEval::removeEmployee()
 void OpenEval::removeEmployer()
 {
 
-    int employerID = currentEmployerID;
+    int button = QMessageBox::question(this, tr("Confirm Remove"), tr("Are you sure you want to remove %1?")
+                                       .arg(employerName->text()), QMessageBox::Yes | QMessageBox::No);
 
-    QVector<int> employerIDVector = generateEmployerIDVector();
-
-    if (employerIDVector.size() > 1)
+    if (button == QMessageBox::Yes)
     {
-        setNextEmployer();
-    }
 
-    else
-    {
-        employeeName->setText("");
-        employerName->setText("");
-        disableEmployerFields();
-        disableEmployeeFields();
-    }
+        int employerID = currentEmployerID;
 
-    QFile fieldPlacementsFile(FIELDPLACEMENTSFILE);
-    QFile evaluationResultsFile(EVALUATIONRESULTSFILE);
+        QVector<int> employerIDVector = generateEmployerIDVector();
 
-    QVector<int> employeeIDVector = generateEmployeeIDVector(employerID);
-
-    if (employeeIDVector.size() == 0)
-    {
-        removeEntity(employerDataFile, employerID, 0);
-        disableEmployeeFields();
-    }
-
-    else
-    {
-        for (int i = 0; i < employeeIDVector.size(); i++)
+        if (employerIDVector.size() > 1)
         {
-            removeEntity(&fieldPlacementsFile, employeeIDVector.at(i), 0);
-            removeEntity(&evaluationResultsFile, employeeIDVector.at(i), 1);
-            removeEntity(employeeDataFile, employeeIDVector.at(i), 0);
+            setNextEmployer();
         }
 
-        removeEntity(employerDataFile, employerID, 0);
+        else
+        {
+            employeeName->setText("");
+            employerName->setText("");
+            disableEmployerFields();
+            disableEmployeeFields();
+        }
+
+        QFile fieldPlacementsFile(FIELDPLACEMENTSFILE);
+        QFile evaluationResultsFile(EVALUATIONRESULTSFILE);
+
+        QVector<int> employeeIDVector = generateEmployeeIDVector(employerID);
+
+        if (employeeIDVector.size() == 0)
+        {
+            removeEntity(employerDataFile, employerID, 0);
+            disableEmployeeFields();
+        }
+
+        else
+        {
+            for (int i = 0; i < employeeIDVector.size(); i++)
+            {
+                removeEntity(&fieldPlacementsFile, employeeIDVector.at(i), 0);
+                removeEntity(&evaluationResultsFile, employeeIDVector.at(i), 1);
+                removeEntity(employeeDataFile, employeeIDVector.at(i), 0);
+            }
+
+            removeEntity(employerDataFile, employerID, 0);
+        }
     }
 
 }
@@ -787,6 +802,8 @@ void OpenEval::disableEmployeeFields()
     previousEmployeeButton->setEnabled(false);
     nextEmployeeButton->setEnabled(false);
     employeeInfoButton->setEnabled(false);
+    newEmployeeAction->setEnabled(false);
+    editEmployerAction->setEnabled(false);
 }
 
 void OpenEval::enableEmployerFields()
@@ -798,6 +815,8 @@ void OpenEval::enableEmployerFields()
     previousEmployerButton->setEnabled(true);
     nextEmployerButton->setEnabled(true);
     employerInfoButton->setEnabled(true);
+    newEmployeeAction->setEnabled(true);
+    editEmployerAction->setEnabled(true);
 }
 
 void OpenEval::disableEmployerFields()
