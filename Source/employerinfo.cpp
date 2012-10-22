@@ -87,7 +87,7 @@ void EmployerInfo::setEmployerID(int employerID)
 void EmployerInfo::setFields()
 {
     QFile employerDataFile(EMPLOYERFILE);
-    QString employerDataString = returnDataString(&employerDataFile, currentEmployerID);
+    QString employerDataString = returnDataString(&employerDataFile, currentEmployerID, 0);
     QStringList employerDataList = employerDataString.split(',');
 
     employerName->setText(employerDataList.at(1));

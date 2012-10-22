@@ -1,7 +1,7 @@
 #include <QtGui>
 #include "FileOperations.h"
 
-QString FileOperations::returnDataString(QFile *file, int currentID)
+QString FileOperations::returnDataString(QFile *file, int currentID, int IDPosition)
 {
 
     QTextStream dataStream(file);
@@ -11,7 +11,7 @@ QString FileOperations::returnDataString(QFile *file, int currentID)
     QString dataString = dataStream.readLine();
     QStringList employeeDataList = dataString.split(',');
 
-    while (employeeDataList.at(0).toInt() != currentID)
+    while (employeeDataList.at(IDPosition).toInt() != currentID)
     {
         dataString = dataStream.readLine();
         employeeDataList = dataString.split(',');

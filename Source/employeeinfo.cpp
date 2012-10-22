@@ -189,6 +189,7 @@ EmployeeInfo::EmployeeInfo(QWidget *parent)
     mainLayout->addLayout(buttonLayout, 11, 1, 1, 9);
 
     setLayout(mainLayout);
+    setWindowTitle(tr("Employee Info"));
 }
 
 void EmployeeInfo::setIDValues(int employeeID, int employerID)
@@ -200,7 +201,7 @@ void EmployeeInfo::setIDValues(int employeeID, int employerID)
 void EmployeeInfo::setFields()
 {
     QFile employeeDataFile(EMPLOYEEFILE);
-    QString employeeDataString = returnDataString(&employeeDataFile, currentEmployeeID);
+    QString employeeDataString = returnDataString(&employeeDataFile, currentEmployeeID, 0);
     QStringList employeeDataList = employeeDataString.split(',');
 
 
@@ -234,7 +235,7 @@ void EmployeeInfo::setFields()
 
 */
 
-    QString employerDataString = returnDataString(&employerDataFile, currentEmployerID);
+    QString employerDataString = returnDataString(&employerDataFile, currentEmployerID, 0);
     QStringList employerDataList = employerDataString.split(',');
 
 

@@ -485,12 +485,27 @@ void OpenEval::editEmployer()
 
 void OpenEval::findEmployee()
 {
+    int* employeeID = &currentEmployeeID;
+    findEmployeeWindow.setEmployeeID(employeeID, currentEmployerID);
     findEmployeeWindow.show();
+
+    if (findEmployeeWindow.exec() == QDialog::Accepted)
+    {
+        setFields();
+    }
 }
 
 void OpenEval::findEmployer()
 {
+    int* employerID = &currentEmployerID;
+    findEmployerWindow.setEmployerID(employerID);
     findEmployerWindow.show();
+
+    if (findEmployerWindow.exec() == QDialog::Accepted)
+    {
+        setEmployeeIDForEmployer();
+        setFields();
+    }
 }
 
 void OpenEval::removeEmployee()
@@ -612,7 +627,7 @@ void OpenEval::updateEmployeeFields()
     {
         do
         {
-            employeeDataString = returnDataString(employeeDataFile, currentEmployeeID);
+            employeeDataString = returnDataString(employeeDataFile, currentEmployeeID, 0);
             employeeDataList = employeeDataString.split(',');
             employeeNameString = employeeDataList.at(1) + " " + employeeDataList.at(2);
             //employeeDataString = employeeData->readLine();
