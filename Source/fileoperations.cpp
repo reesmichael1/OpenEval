@@ -109,26 +109,75 @@ QVector<int> FileOperations::generateEmployeeIDVector(int currentEmployerID)
     return employeeIDVector;
 }
 
-QVector<int> FileOperations::generateEmployerIDVector()
+QVector<int> FileOperations::generateEmployeeIDVector()
+{
+    QVector<int> employeeIDVector;
+
+    QFile employeeDataFile(EMPLOYEEFILE);
+    QTextStream employeeData(&employeeDataFile);
+
+    employeeDataFile.open(QIODevice::Text | QIODevice::ReadOnly);
+
+    QString employeeDataString = employeeData.readLine();
+    QStringList employeeDataList;
+
+    while (employeeDataString != "")
+    {
+        employeeDataList = employeeDataString.split(',');
+        employeeIDVector.append(employeeDataList.at(0).toInt());
+        employeeDataString = employeeData.readLine();
+    }
+
+    employeeDataFile.close();
+
+    return employeeIDVector;
+}
+
+QVector<int> FileOperations::generateIDVector(QFile *file)
 {
     QVector<int> employerIDVector;
 
-    QFile employerDataFile(EMPLOYERFILE);
-    QTextStream employerData(&employerDataFile);
+    QTextStream dataStream(file);
 
-    employerDataFile.open(QIODevice::Text | QIODevice::ReadOnly);
+    file->open(QIODevice::Text | QIODevice::ReadOnly);
 
-    QString employerDataString = employerData.readLine();
+    QString employerDataString = dataStream.readLine();
     QStringList employerDataList;
 
     while (employerDataString != "")
     {
         employerDataList = employerDataString.split(',');
         employerIDVector.append(employerDataList.at(0).toInt());
-        employerDataString = employerData.readLine();
+        employerDataString = dataStream.readLine();
     }
 
-    employerDataFile.close();
+    file->close();
 
     return employerIDVector;
+}
+
+int FileOperations::returnMaxValue(QVector<int> IDVector)
+{
+    int maxID;
+
+    if (IDVector.size() == 0)
+    {
+        maxID = 1;
+    }
+
+    else
+    {
+        maxID = 0;
+
+        for (int i = 0; i < IDVector.size(); i++)
+        {
+            if (IDVector.at(i) > maxID)
+            {
+                maxID = IDVector.at(i);
+            }
+        }
+        maxID++;
+    }
+
+    return maxID;
 }

@@ -77,6 +77,7 @@ EmployerInfo::EmployerInfo(QWidget *parent)
     mainLayout->addLayout(buttonLayout, 5, 1, 1, 9);
 
     setLayout(mainLayout);
+    setWindowTitle(tr("Employer Info"));
 }
 
 void EmployerInfo::setEmployerID(int employerID)

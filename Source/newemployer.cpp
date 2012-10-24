@@ -5,10 +5,10 @@ NewEmployer::NewEmployer(QWidget *parent)
     : QDialog(parent)
 {
     employerDataFile = new QFile(EMPLOYERFILE);
-    employerIDDataFile = new QFile(EMPLOYERIDFILE);
+    //employerIDDataFile = new QFile(EMPLOYERIDFILE);
 
     //Declare streams to read and write the next employer ID.
-    employerIDData = new QTextStream(employerIDDataFile);
+    //employerIDData = new QTextStream(employerIDDataFile);
     employerData = new QTextStream(employerDataFile);
 
     assignEmployerID();
@@ -68,6 +68,7 @@ NewEmployer::NewEmployer(QWidget *parent)
     mainLayout->addLayout(buttonLayout, 5, 0, 1, 10);
 
     setLayout(mainLayout);
+    setWindowTitle(tr("New Employer"));
 }
 
 void NewEmployer::cancel()
@@ -78,6 +79,7 @@ void NewEmployer::cancel()
 
 void NewEmployer::submit()
 {
+    assignEmployerID();
     writeEmployerData();
     clearFields();
 }
@@ -92,16 +94,16 @@ void NewEmployer::writeEmployerData()
                         << "," << employerEMail->text() << "," << employerContact->text() << endl;
 
     employerDataFile->close();
-
+/*
     //Increment the employer ID and update EMPLOYERID.txt.
     employerID++;
     employerIDDataFile->open(QIODevice::Text | QIODevice::WriteOnly | QIODevice::Truncate);
     employerIDData->operator <<(employerID);
-    employerIDDataFile->close();
+    employerIDDataFile->close();*/
 }
 
 void NewEmployer::assignEmployerID()
-{
+{/*
     employerIDDataFile->open(QIODevice::Text | QIODevice::ReadWrite);
     QString employerIDString = employerIDData->readLine();
     if (employerIDString == "")
@@ -113,8 +115,32 @@ void NewEmployer::assignEmployerID()
     {
         employerID = employerIDString.toInt();
     }
-    employerIDDataFile->close();
+    employerIDDataFile->close();*/
 
+    QFile employerDataFile(EMPLOYERFILE);
+    QVector<int> employerIDVector = generateIDVector(&employerDataFile);
+    employerID = returnMaxValue(employerIDVector);
+/*
+    if (employerIDVector.size() == 0)
+    {
+        employerID = 1;
+    }
+
+    else
+    {
+        int largestEmployerID = 1;
+
+        for (int i = 0; i < employerIDVector.size(); i++)
+        {
+            if (employerIDVector.at(i) > largestEmployerID)
+            {
+                largestEmployerID = employerIDVector.at(i);
+            }
+        }
+
+        largestEmployerID++;
+        employerID = largestEmployerID;
+    }*/
 }
 
 void NewEmployer::clearFields()

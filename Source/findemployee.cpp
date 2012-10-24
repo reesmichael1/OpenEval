@@ -19,7 +19,7 @@ FindEmployee::FindEmployee(QDialog * parent)
     mainLayout->addWidget(findEmployeeButton);
 
     setLayout(mainLayout);
-
+    setWindowTitle(tr("Find Employee"));
 }
 
 void FindEmployee::findEmployee()

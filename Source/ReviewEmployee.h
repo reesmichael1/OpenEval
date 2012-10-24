@@ -13,7 +13,7 @@ class QFile;
 class QTextStream;
 class QComboBox;
 
-class ReviewEmployee : public QDialog
+class ReviewEmployee : public QDialog, private FileOperations
 {
     Q_OBJECT
 
@@ -49,9 +49,7 @@ private:
     QDoubleSpinBox *averageScore;
     QComboBox *employmentRecommendation;
     QFile *evaluationResultsDataFile;
-    QFile *evaluationIDFile;
     QTextStream *evaluationResults;
-    QTextStream *evaluationID;
     QCalendarWidget *currentEvaluationDate;
     QCalendarWidget *nextEvaluationDate;
     void clearFields();

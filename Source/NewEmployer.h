@@ -8,7 +8,7 @@
 class QLineEdit;
 class QTextStream;
 
-class NewEmployer : public QDialog
+class NewEmployer : public QDialog, private FileOperations
 {
     Q_OBJECT
 
@@ -41,9 +41,9 @@ private:
     QPushButton *submitButton;
     QPushButton *cancelButton;
     QFile *employerDataFile;
-    QFile *employerIDDataFile;
+    //QFile *employerIDDataFile;
     QTextStream *employerData;
-    QTextStream *employerIDData;
+    //QTextStream *employerIDData;
     void assignEmployerID();
     void writeEmployerData();
     void setReadOnly();

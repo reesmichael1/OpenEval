@@ -66,15 +66,14 @@ private:
     QMenu *editMenu;
     QAction *newEmployeeAction;
     QAction *newEmployerAction;
+    QAction *editEmployeeAction;
     QAction *editEmployerAction;
     QKeySequence *newEmployerShortcut;
     QWidget *centralWidget;
     QFile *employeeDataFile;
     QFile *employerDataFile;
-    QFile *employerIDDataFile;
     QTextStream *employeeData;
     QTextStream *employerData;
-    QTextStream *employerIDData;
     NewEmployee newEmployeeWindow;
     NewEmployer newEmployerWindow;
     ReviewEmployee reviewEmployeeWindow;

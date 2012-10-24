@@ -9,7 +9,7 @@ class QLineEdit;
 class QTextStream;
 class QComboBox;
 
-class NewEmployee : public QDialog
+class NewEmployee : public QDialog, private FileOperations
 {
     Q_OBJECT
 
@@ -36,11 +36,9 @@ private:
     QComboBox *employeeEmployer;
     QFile *employerDataFile;
     QFile *employeeDataFile;
-    QFile *employeeIDDataFile;
     QFile *fieldPlacementsFile;
     QTextStream *employerData;
     QTextStream *employeeData;
-    QTextStream *employeeIDData;
     QTextStream *fieldPlacementsData;
     QPushButton *submitButton;
     QPushButton *cancelButton;

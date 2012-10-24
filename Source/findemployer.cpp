@@ -19,13 +19,14 @@ FindEmployer::FindEmployer(QDialog * parent)
     mainLayout->addWidget(findEmployerButton);
 
     setLayout(mainLayout);
+    setWindowTitle(tr("Find Employer"));
 
 }
 
 void FindEmployer::findEmployer()
 {
     QFile employerDataFile(EMPLOYERFILE);
-    QVector<int> employerIDVector = generateEmployerIDVector();
+    QVector<int> employerIDVector = generateIDVector(&employerDataFile);
     QString employerDataString;
 
     for (int i = 0; i < employerIDVector.size(); i++)

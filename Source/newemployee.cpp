@@ -7,11 +7,9 @@ NewEmployee::NewEmployee(QWidget *parent)
 
     employerDataFile = new QFile(EMPLOYERFILE);
     employeeDataFile = new QFile(EMPLOYEEFILE);
-    employeeIDDataFile = new QFile(EMPLOYEEIDFILE);
     fieldPlacementsFile = new QFile(FIELDPLACEMENTSFILE);
     employerData = new QTextStream(employerDataFile);
     employeeData = new QTextStream(employeeDataFile);
-    employeeIDData = new QTextStream(employeeIDDataFile);
     fieldPlacementsData = new QTextStream(fieldPlacementsFile);
 
     assignEmployeeID();
@@ -81,6 +79,7 @@ NewEmployee::NewEmployee(QWidget *parent)
     mainLayout->addLayout(buttonLayout, 5, 0, 1, 10);
 
     setLayout(mainLayout);
+    setWindowTitle(tr("New Employee"));
     addEmployers();
 }
 
@@ -92,6 +91,7 @@ void NewEmployee::cancel()
 
 void NewEmployee::submit()
 {
+    assignEmployeeID();
     writeEmployeeData();
     clearFields();
 }
@@ -118,18 +118,31 @@ void NewEmployee::addEmployers()
 
 void NewEmployee::assignEmployeeID()
 {
-    employeeIDDataFile->open(QIODevice::ReadWrite | QIODevice::Text);
-    QString employeeIDString = employeeIDData->readLine();
-    if (employeeIDString == "")
+
+    QVector<int> employeeIDVector = generateEmployeeIDVector();
+    employeeID = returnMaxValue(employeeIDVector);
+
+/*
+    if (employeeIDVector.size() == 0)
     {
         employeeID = 1;
-        employeeIDData->operator <<(employeeID);
     }
+
     else
     {
-        employeeID = employeeIDString.toInt();
-    }
-    employeeIDDataFile->close();
+        int largestEmployeeID = 1;
+
+        for (int i = 0; i < employeeIDVector.size(); i++)
+        {
+            if (employeeIDVector.at(i) > largestEmployeeID)
+            {
+                largestEmployeeID = employeeIDVector.at(i);
+            }
+        }
+
+        largestEmployeeID++;
+        employeeID = largestEmployeeID;
+    }*/
 }
 
 int NewEmployee::setEmployeeInfo(int currentEmployeeID)
@@ -151,12 +164,6 @@ void NewEmployee::writeEmployeeData()
     employeeDataFile->close();
 
     employEmployee();
-
-    //Increment the employee ID and write to the data file.
-    employeeID++;
-    employeeIDDataFile->open(QIODevice::Text | QIODevice::WriteOnly | QIODevice::Truncate);
-    employeeIDData->operator <<(employeeID);
-    employeeIDDataFile->close();
 }
 
 void NewEmployee::employEmployee()

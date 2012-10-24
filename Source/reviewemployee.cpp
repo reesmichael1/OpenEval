@@ -8,9 +8,6 @@ ReviewEmployee::ReviewEmployee(QWidget *parent)
     evaluationResultsDataFile = new QFile(EVALUATIONRESULTSFILE);
     evaluationResults = new QTextStream(evaluationResultsDataFile);
 
-    evaluationIDFile = new QFile(EVALUATIONIDFILE);
-    evaluationID = new QTextStream(evaluationIDFile);
-
     assignEvaluationID();
 
     QLabel *employeeNameLabel = new QLabel(tr("Employee Name"));
@@ -144,11 +141,12 @@ ReviewEmployee::ReviewEmployee(QWidget *parent)
     //setEmployeeName();
 
     setLayout(mainLayout);
+    setWindowTitle(tr("Review Employee"));
 }
 
 void ReviewEmployee::submit()
 {
-
+    assignEvaluationID();
     setAverageScore();
 
     evaluationResultsDataFile->open(QIODevice::Text | QIODevice::WriteOnly | QIODevice::Append);
@@ -163,12 +161,6 @@ void ReviewEmployee::submit()
                     << overallProgress->value() << "," << employmentRecommendation->currentText() << endl;
     evaluationResultsDataFile->close();
 
-    currentEvaluationID++;
-
-    evaluationIDFile->open(QIODevice::Text | QIODevice::WriteOnly | QIODevice::Truncate);
-    evaluationID->operator <<(currentEvaluationID);
-    evaluationIDFile->close();
-
     clearFields();
 }
 
@@ -181,21 +173,32 @@ void ReviewEmployee::cancel()
 void ReviewEmployee::assignEvaluationID()
 {
 
-    evaluationIDFile->open(QIODevice::Text | QIODevice::ReadWrite);
-    evaluationID = new QTextStream(evaluationIDFile);
+    QFile evaluationResultsFile(EVALUATIONRESULTSFILE);
+    QVector<int> evaluationIDVector = generateIDVector(&evaluationResultsFile);
+    currentEvaluationID = returnMaxValue(evaluationIDVector);
 
-    QString evaluationIDString = evaluationID->readLine();
-
-    if (evaluationIDString == "")
+/*
+    if (evaluationIDVector.size() == 0)
     {
         currentEvaluationID = 1;
     }
+
     else
     {
-        currentEvaluationID = evaluationIDString.toInt();
-    }
+        int largestEvaluationID = 1;
 
-    evaluationIDFile->close();
+        for (int i = 0; i < evaluationIDVector.size(); i++)
+        {
+            if (evaluationIDVector.at(i) > largestEvaluationID)
+            {
+                largestEvaluationID = evaluationIDVector.at(i);
+            }
+        }
+
+        largestEvaluationID++;
+        currentEvaluationID = largestEvaluationID;
+    }*/
+
 }
 
 void ReviewEmployee::clearFields()
