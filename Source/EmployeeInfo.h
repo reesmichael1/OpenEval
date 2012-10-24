@@ -22,7 +22,7 @@ public:
 
 public slots:
     void clearFields();
-    void showReviewDates();
+    void showReviewInfo();
     void editEmployee();
     void submitEdits();
     void cancelEdits();
@@ -56,10 +56,10 @@ private:
     QCalendarWidget *nextEvaluationDate;
     QPushButton *okButton;
     QPushButton *cancelButton;
-    QPushButton *reviewDatesButton;
+    QPushButton *showReviewButton;
     QPushButton *editButton;
     QPushButton *submitButton;
-    QDialog *reviewDatesDialog;
+    QDialog *reviewDialog;
 };
 
 #endif // EMPLOYEEINFO_H

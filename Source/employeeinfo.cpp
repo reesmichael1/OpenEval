@@ -44,9 +44,7 @@ EmployeeInfo::EmployeeInfo(QWidget *parent)
     employeeEmployer = new QLineEdit;
     employeeEmployer->setReadOnly(true);
 
-    QLabel *workQualityLabel = new QLabel(tr("Quality of Work:"));
-    workQualityLabel->setToolTip(tr("Accuracy, neatness, timeliness, attention to detail,"
-                                    "volume/quantity requirements, adherence to duties, and procedures in job description."));
+
     qualityOfWorkScore = new QSpinBox;
     qualityOfWorkScore->setRange(1, 5);
     qualityOfWorkScore->setMaximumWidth(40);
@@ -56,9 +54,6 @@ EmployeeInfo::EmployeeInfo(QWidget *parent)
     workQualityComments->setMaxLength(256);
     workQualityComments->setReadOnly(true);
 
-
-    QLabel *workHabitsLabel = new QLabel(tr("Work Habits:"));
-    workHabitsLabel->setToolTip(tr("Attendance, organization, punctuality, and time on task."));
     workHabitsScore = new QSpinBox;
     workHabitsScore->setRange(1, 5);
     workHabitsScore->setMaximumWidth(40);
@@ -68,8 +63,6 @@ EmployeeInfo::EmployeeInfo(QWidget *parent)
     workHabitsComments->setMaxLength(256);
     workHabitsComments->setReadOnly(true);
 
-    QLabel *jobKnowledgeLabel = new QLabel(tr("Job Knowledge:"));
-    jobKnowledgeLabel->setToolTip(tr("Skill/ability to perform job, and interest in learning."));
     jobKnowledgeScore = new QSpinBox;
     jobKnowledgeScore->setRange(1, 5);
     jobKnowledgeScore->setMaximumWidth(40);
@@ -79,8 +72,6 @@ EmployeeInfo::EmployeeInfo(QWidget *parent)
     jobKnowledgeComments->setMaxLength(256);
     jobKnowledgeComments->setReadOnly(true);
 
-    QLabel *behaviorLabel = new QLabel(tr("Behavior:"));
-    behaviorLabel->setToolTip(tr("Teamwork, communication, response to criticism, and adapt to change."));
     behaviorScore = new QSpinBox;
     behaviorScore->setRange(1, 5);
     behaviorScore->setMaximumWidth(40);
@@ -90,25 +81,20 @@ EmployeeInfo::EmployeeInfo(QWidget *parent)
     behaviorComments->setMaxLength(256);
     behaviorComments->setReadOnly(true);
 
-    QLabel *averageLabel = new QLabel(tr("Average:"));
-    averageLabel->setToolTip(tr("Average of scores for Quality of Work, Work Habits, Job Knowledge, and Behavior."));
     averageScore = new QDoubleSpinBox;
     averageScore->setRange(1 , 5);
     averageScore->setReadOnly(true);
     averageScore->setMaximumWidth(55);
     averageScore->setReadOnly(true);
 
-    QLabel *overallCommentsLabel = new QLabel(tr("Overall Comments"));
     overallComments = new QLineEdit;
     overallComments->setMaxLength(256);
     overallComments->setReadOnly(true);
 
-    QLabel *overallProgressLabel = new QLabel(tr("Overall Progress"));
     overallProgressScore = new QSpinBox;
     overallProgressScore->setMaximumWidth(55);
     overallProgressScore->setReadOnly(true);
 
-    QLabel *recommendationLabel = new QLabel(tr("Employment Recommendation"));
     employmentRecommendation = new QLineEdit;
     employmentRecommendation->setReadOnly(true);
 
@@ -120,8 +106,8 @@ EmployeeInfo::EmployeeInfo(QWidget *parent)
     nextEvaluationDate->setSelectionMode(QCalendarWidget::NoSelection);
     nextEvaluationDate->setVerticalHeaderFormat(QCalendarWidget::NoVerticalHeader);
 
-    reviewDatesButton = new QPushButton(tr("Dates for Employee Reviews"));
-    connect(reviewDatesButton, SIGNAL(clicked()), this, SLOT(showReviewDates()));
+    showReviewButton = new QPushButton(tr("Employee Review Information"));
+    connect(showReviewButton, SIGNAL(clicked()), this, SLOT(showReviewInfo()));
 
     editButton = new QPushButton(tr("Edit Employee"));
     connect(editButton, SIGNAL(clicked()), this, SLOT(editEmployee()));
@@ -139,7 +125,7 @@ EmployeeInfo::EmployeeInfo(QWidget *parent)
     cancelButton->setVisible(false);
 
     QHBoxLayout *buttonLayout = new QHBoxLayout;
-    buttonLayout->addWidget(reviewDatesButton);
+    buttonLayout->addWidget(showReviewButton);
     buttonLayout->addWidget(editButton);
     buttonLayout->addWidget(submitButton);
     buttonLayout->addWidget(okButton);
@@ -166,27 +152,8 @@ EmployeeInfo::EmployeeInfo(QWidget *parent)
     mainLayout->addWidget(employeeEMail, 4, 1, 1, 4);
     mainLayout->addWidget(employerLabel, 4, 5);
     mainLayout->addWidget(employeeEmployer, 4, 6, 1, 4);
-    mainLayout->addWidget(workQualityLabel, 5, 0);
-    mainLayout->addWidget(qualityOfWorkScore, 5, 1);
-    mainLayout->addWidget(workQualityComments, 5, 2, 1, 8);
-    mainLayout->addWidget(workHabitsLabel, 6, 0);
-    mainLayout->addWidget(workHabitsScore, 6, 1);
-    mainLayout->addWidget(workHabitsComments, 6, 2, 1, 8);
-    mainLayout->addWidget(jobKnowledgeLabel, 7, 0);
-    mainLayout->addWidget(jobKnowledgeScore, 7, 1);
-    mainLayout->addWidget(jobKnowledgeComments, 7, 2, 1, 8);
-    mainLayout->addWidget(behaviorLabel, 8, 0);
-    mainLayout->addWidget(behaviorScore, 8, 1);
-    mainLayout->addWidget(behaviorComments, 8, 2, 1, 8);
-    mainLayout->addWidget(averageLabel, 9, 0);
-    mainLayout->addWidget(averageScore, 9, 1);
-    mainLayout->addWidget(overallCommentsLabel, 9, 2);
-    mainLayout->addWidget(overallComments, 9, 3, 1, 7);
-    mainLayout->addWidget(overallProgressLabel, 10, 0);
-    mainLayout->addWidget(overallProgressScore, 10, 1);
-    mainLayout->addWidget(recommendationLabel, 10, 8);
-    mainLayout->addWidget(employmentRecommendation, 10, 9);
-    mainLayout->addLayout(buttonLayout, 11, 1, 1, 9);
+    mainLayout->addLayout(buttonLayout, 5, 1, 1, 9);
+
 
     setLayout(mainLayout);
     setWindowTitle(tr("Employee Info"));
@@ -277,20 +244,64 @@ void EmployeeInfo::setFields()
 
 }
 
-void EmployeeInfo::showReviewDates()
+void EmployeeInfo::showReviewInfo()
 {
+    QLabel *workQualityLabel = new QLabel(tr("Quality of Work:"));
+    workQualityLabel->setToolTip(tr("Accuracy, neatness, timeliness, attention to detail,"
+                                    "volume/quantity requirements, adherence to duties, and procedures in job description."));
+
+    QLabel *workHabitsLabel = new QLabel(tr("Work Habits:"));
+    workHabitsLabel->setToolTip(tr("Attendance, organization, punctuality, and time on task."));
+
+    QLabel *jobKnowledgeLabel = new QLabel(tr("Job Knowledge:"));
+    jobKnowledgeLabel->setToolTip(tr("Skill/ability to perform job, and interest in learning."));
+
+    QLabel *behaviorLabel = new QLabel(tr("Behavior:"));
+    behaviorLabel->setToolTip(tr("Teamwork, communication, response to criticism, and adapt to change."));
+
+    QLabel *averageLabel = new QLabel(tr("Average:"));
+    averageLabel->setToolTip(tr("Average of scores for Quality of Work, Work Habits, Job Knowledge, and Behavior."));
+
     QLabel *previousDateLabel = new QLabel(tr("Previous Evaluation"));
     QLabel *nextDateLabel = new QLabel(tr("Next Evaluation"));
 
-    reviewDatesDialog = new QDialog();
+    QLabel *overallCommentsLabel = new QLabel(tr("Overall Comments"));
+    QLabel *overallProgressLabel = new QLabel(tr("Overall Progress"));
+    QLabel *recommendationLabel = new QLabel(tr("Employment Recommendation"));
 
-    QHBoxLayout *reviewDatesLayout = new QHBoxLayout(reviewDatesDialog);
-    reviewDatesLayout->addWidget(previousDateLabel);
-    reviewDatesLayout->addWidget(previousEvaluationDate);
-    reviewDatesLayout->addWidget(nextDateLabel);
-    reviewDatesLayout->addWidget(nextEvaluationDate);
+    QGridLayout *dateLayout = new QGridLayout;
 
-    reviewDatesDialog->show();
+    dateLayout->addWidget(previousDateLabel, 0, 0);
+    dateLayout->addWidget(previousEvaluationDate, 0, 1);
+    dateLayout->addWidget(nextDateLabel, 1, 0);
+    dateLayout->addWidget(nextEvaluationDate, 1, 1);
+
+    reviewDialog = new QDialog();
+
+    QGridLayout *reviewLayout = new QGridLayout(reviewDialog);
+    reviewLayout->addWidget(workQualityLabel, 5, 0);
+    reviewLayout->addWidget(qualityOfWorkScore, 5, 1);
+    reviewLayout->addWidget(workQualityComments, 5, 2, 1, 8);
+    reviewLayout->addWidget(workHabitsLabel, 6, 0);
+    reviewLayout->addWidget(workHabitsScore, 6, 1);
+    reviewLayout->addWidget(workHabitsComments, 6, 2, 1, 8);
+    reviewLayout->addWidget(jobKnowledgeLabel, 7, 0);
+    reviewLayout->addWidget(jobKnowledgeScore, 7, 1);
+    reviewLayout->addWidget(jobKnowledgeComments, 7, 2, 1, 8);
+    reviewLayout->addWidget(behaviorLabel, 8, 0);
+    reviewLayout->addWidget(behaviorScore, 8, 1);
+    reviewLayout->addWidget(behaviorComments, 8, 2, 1, 8);
+    reviewLayout->addWidget(averageLabel, 9, 0);
+    reviewLayout->addWidget(averageScore, 9, 1);
+    reviewLayout->addWidget(overallCommentsLabel, 9, 2);
+    reviewLayout->addWidget(overallComments, 9, 3, 1, 7);
+    reviewLayout->addWidget(overallProgressLabel, 10, 0);
+    reviewLayout->addWidget(overallProgressScore, 10, 1);
+    reviewLayout->addWidget(recommendationLabel, 10, 8);
+    reviewLayout->addWidget(employmentRecommendation, 10, 9);
+    reviewLayout->addLayout(dateLayout, 11, 2, 1, 8, Qt::AlignLeft);
+
+    reviewDialog->show();
 }
 
 void EmployeeInfo::clearFields()
@@ -355,7 +366,7 @@ void EmployeeInfo::updateMode(Mode currentMode)
         employeeState->setReadOnly(false);
         employeeZipCode->setReadOnly(false);
         employeeEMail->setReadOnly(false);
-        reviewDatesButton->setEnabled(false);
+        showReviewButton->setEnabled(false);
         cancelButton->setVisible(true);
         submitButton->setVisible(true);
     }
@@ -372,7 +383,7 @@ void EmployeeInfo::updateMode(Mode currentMode)
         employeeState->setReadOnly(true);
         employeeZipCode->setReadOnly(true);
         employeeEMail->setReadOnly(true);
-        reviewDatesButton->setEnabled(true);
+        showReviewButton->setEnabled(true);
         okButton->setVisible(true);
         editButton->setVisible(true);
     }
