@@ -1,3 +1,5 @@
+//OpenEval v. 1.0 Beta
+
 #include <QtGui>
 #include <fstream>
 #include "OpenEval.h"
