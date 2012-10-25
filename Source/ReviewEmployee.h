@@ -32,7 +32,6 @@ private:
     int currentEmployerID;
     int currentEvaluationID;
     QPushButton *submitButton;
-    QPushButton *averageButton;
     QPushButton *cancelButton;
     QLineEdit *employeeName;
     QLineEdit *employerName;

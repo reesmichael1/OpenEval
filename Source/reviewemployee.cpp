@@ -24,6 +24,7 @@ ReviewEmployee::ReviewEmployee(QWidget *parent)
     qualityOfWorkScore = new QSpinBox;
     qualityOfWorkScore->setRange(1, 5);
     qualityOfWorkScore->setMaximumWidth(40);
+    connect(qualityOfWorkScore, SIGNAL(valueChanged(int)), this, SLOT(setAverageScore()));
 
     workQualityComments = new QLineEdit;
     workQualityComments->setMaxLength(256);
@@ -33,6 +34,7 @@ ReviewEmployee::ReviewEmployee(QWidget *parent)
     workHabitsScore = new QSpinBox;
     workHabitsScore->setRange(1, 5);
     workHabitsScore->setMaximumWidth(40);
+    connect(workHabitsScore, SIGNAL(valueChanged(int)), this, SLOT(setAverageScore()));
 
     workHabitsComments = new QLineEdit;
     workHabitsComments->setMaxLength(256);
@@ -42,6 +44,7 @@ ReviewEmployee::ReviewEmployee(QWidget *parent)
     jobKnowledgeScore = new QSpinBox;
     jobKnowledgeScore->setRange(1, 5);
     jobKnowledgeScore->setMaximumWidth(40);
+    connect(jobKnowledgeScore, SIGNAL(valueChanged(int)), this, SLOT(setAverageScore()));
 
     jobKnowledgeComments = new QLineEdit;
     jobKnowledgeComments->setMaxLength(256);
@@ -51,6 +54,7 @@ ReviewEmployee::ReviewEmployee(QWidget *parent)
     behaviorScore = new QSpinBox;
     behaviorScore->setRange(1, 5);
     behaviorScore->setMaximumWidth(40);
+    connect(behaviorScore, SIGNAL(valueChanged(int)), this, SLOT(setAverageScore()));
 
     behaviorComments = new QLineEdit;
     behaviorComments->setMaxLength(256);
@@ -86,9 +90,6 @@ ReviewEmployee::ReviewEmployee(QWidget *parent)
     cancelButton = new QPushButton(tr("Cancel"));
     connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancel()));
 
-    averageButton = new QPushButton(tr("Calculate Average"));
-    connect(averageButton, SIGNAL(clicked()), this, SLOT(setAverageScore()));
-
     submitButton = new QPushButton(tr("Submit"));
     connect(submitButton, SIGNAL(clicked()), this, SLOT(accept()));
     connect(submitButton, SIGNAL(clicked()), this, SLOT(submit()));
@@ -120,17 +121,16 @@ ReviewEmployee::ReviewEmployee(QWidget *parent)
     evaluationLayout->addWidget(employmentRecommendation, 6, 7);
 
 
-    QHBoxLayout *calendarLayout = new QHBoxLayout;
+    QGridLayout *calendarLayout = new QGridLayout;
 
-    calendarLayout->addWidget(currentDateLabel);
-    calendarLayout->addWidget(currentEvaluationDate);
-    calendarLayout->addWidget(nextDateLabel);
-    calendarLayout->addWidget(nextEvaluationDate);
+    calendarLayout->addWidget(currentDateLabel, 0, 0);
+    calendarLayout->addWidget(currentEvaluationDate, 1, 0);
+    calendarLayout->addWidget(nextDateLabel, 0, 1);
+    calendarLayout->addWidget(nextEvaluationDate, 1, 1);
 
     QHBoxLayout *buttonLayout = new QHBoxLayout;
 
     buttonLayout->addWidget(cancelButton);
-    buttonLayout->addWidget(averageButton);
     buttonLayout->addWidget(submitButton);
 
     QGridLayout *mainLayout = new QGridLayout;
@@ -147,7 +147,6 @@ ReviewEmployee::ReviewEmployee(QWidget *parent)
 void ReviewEmployee::submit()
 {
     assignEvaluationID();
-    setAverageScore();
 
     evaluationResultsDataFile->open(QIODevice::Text | QIODevice::WriteOnly | QIODevice::Append);
     evaluationResults->operator<<(currentEvaluationID) << "," << currentEmployeeID << "," << currentEmployerID << ","

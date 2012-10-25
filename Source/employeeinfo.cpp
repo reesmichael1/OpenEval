@@ -269,12 +269,12 @@ void EmployeeInfo::showReviewInfo()
     QLabel *overallProgressLabel = new QLabel(tr("Overall Progress"));
     QLabel *recommendationLabel = new QLabel(tr("Employment Recommendation"));
 
-    QGridLayout *dateLayout = new QGridLayout;
+    QGridLayout *calendarLayout = new QGridLayout;
 
-    dateLayout->addWidget(previousDateLabel, 0, 0);
-    dateLayout->addWidget(previousEvaluationDate, 0, 1);
-    dateLayout->addWidget(nextDateLabel, 1, 0);
-    dateLayout->addWidget(nextEvaluationDate, 1, 1);
+    calendarLayout->addWidget(previousDateLabel, 0, 0);
+    calendarLayout->addWidget(previousEvaluationDate, 1, 0);
+    calendarLayout->addWidget(nextDateLabel, 0, 1);
+    calendarLayout->addWidget(nextEvaluationDate, 1, 1);
 
     reviewDialog = new QDialog();
 
@@ -299,7 +299,7 @@ void EmployeeInfo::showReviewInfo()
     reviewLayout->addWidget(overallProgressScore, 10, 1);
     reviewLayout->addWidget(recommendationLabel, 10, 8);
     reviewLayout->addWidget(employmentRecommendation, 10, 9);
-    reviewLayout->addLayout(dateLayout, 11, 2, 1, 8, Qt::AlignLeft);
+    reviewLayout->addLayout(calendarLayout, 11, 0, 1, 10);
 
     reviewDialog->show();
 }
