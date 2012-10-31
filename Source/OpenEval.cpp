@@ -24,8 +24,9 @@ OpenEval::OpenEval()
     employerName->setReadOnly(true);
 
     QLabel *workQualityLabel = new QLabel(tr("Quality of Work:"));
-    workQualityLabel->setToolTip(tr("Accuracy, neatness, timeliness, attention to detail,"
-                                    "volume/quantity requirements, adherence to duties, and procedures in job description."));
+    workQualityLabel->setToolTip(tr("Accuracy, neatness, timeliness, attention to detail, "
+                                    "volume/quantity requirements, adherence to duties, "
+                                    "and procedures in job description."));
     qualityOfWorkScore = new QSpinBox;
     qualityOfWorkScore->setRange(1, 5);
     qualityOfWorkScore->setMaximumWidth(40);
@@ -200,8 +201,8 @@ void OpenEval::addEmployee()
     //If the new employee was submitted...
     if (newEmployeeWindow.exec() == QDialog::Accepted)
     {
-
         //...then update the Employee Name field to represent the new employee.
+
         employeeDataFile->open(QIODevice::Text | QIODevice::ReadOnly);
 
         QStringList employeeDataList;
@@ -215,6 +216,8 @@ void OpenEval::addEmployee()
         }
 
         employeeDataFile->close();
+
+    //currentEmployeeID = returnLastID(employeeDataFile, 0).toInt();
 
         //Update the Employee Name field to reflect the new employee.
         updateEmployeeFields();
@@ -241,6 +244,8 @@ void OpenEval::addEmployer()
             employerDataString = employerData->readLine();
         }
         employerDataFile->close();
+
+        //currentEmployerID = returnLastID(employerDataFile, 0);
 
         //Update the Employer Name field to reflect the new employer.
         setEmployeeIDForEmployer();
@@ -381,7 +386,12 @@ void OpenEval::nextEmployerID()
         i++;
         nextEmployerID = employerIDVector.at(i);
     }
-
+/*
+    if (currentEmployerID != nextEmployerID)
+    {
+        setEmployeeIDForEmployer();
+    }
+*/
     currentEmployerID = nextEmployerID;
 
 }
@@ -415,20 +425,25 @@ void OpenEval::previousEmployerID()
         enableEmployerFields();
         while (employerIDVector.at(i) != currentEmployerID)
         {
-            if (employerIDVector.at(i) != currentEmployerID)
+            while (employerIDVector.at(i) != currentEmployerID)
             {
                 previousEmployerID = employerIDVector.at(i);
                 i++;
             }
         }
     }
-
+/*
+    if (currentEmployerID != previousEmployerID)
+    {
+        setEmployeeIDForEmployer();
+    }
+*/
     currentEmployerID = previousEmployerID;
 
 }
 
 //Set the employer ID to the previous employer in EMPLOYERS.txt.
-//Set the employee ID to this employer's first employee. Set the fields.
+//Set the employee ID to this employer's first employee. Set the name fields.
 void OpenEval::setPreviousEmployer()
 {
     previousEmployerID();
@@ -574,7 +589,8 @@ void OpenEval::removeEmployee()
 void OpenEval::removeEmployer()
 {
 
-    int button = QMessageBox::question(this, tr("Confirm Remove"), tr("Are you sure you want to remove %1?")
+    int button = QMessageBox::question(this, tr("Confirm Remove"), tr("Are you sure you want to remove %1?\n"
+                    "All employees will be removed as well.")
                                        .arg(employerName->text()), QMessageBox::Yes | QMessageBox::No);
 
     if (button == QMessageBox::Yes)
@@ -627,34 +643,28 @@ void OpenEval::removeEmployer()
 //Set the Employer Name field to display the current employer's name.
 void OpenEval::updateEmployerName()
 {
-    employerDataFile->open(QIODevice::Text | QIODevice::ReadOnly);
-    QString employerDataString = employerData->readLine();
-    QString employerNameString;
-    QStringList employerDataList;
 
-    if (employerDataString != "")
+    QFile employerDataFile(EMPLOYERFILE);
+    QString employerDataString = returnDataString(&employerDataFile, currentEmployerID, 0);
+
+    if (!employerDataString.isNull())
     {
-        do
-        {
-            employerDataList = employerDataString.split(',');
-            employerNameString = employerDataList.at(1);
-            employerDataString = employerData->readLine();
-        } while (currentEmployerID != employerDataList.at(0).toInt());
-    enableEmployerFields();
+        QStringList employerDataList = employerDataString.split(',');
+        QString employerNameString  = employerDataList.at(1);
+        employerName->setText(employerNameString);
     }
 
     else
     {
-        employerNameString = "";
+        employerName->setText("");
     }
 
-    employerName->setText(employerNameString);
-    employerDataFile->close();
 }
 
 //Set the Employee Name field to display the current employee's name.
 void OpenEval::updateEmployeeFields()
 {
+/*
     employeeDataFile->open(QIODevice::Text | QIODevice::ReadOnly);
     QString employeeDataString = employeeData->readLine();
     employeeDataFile->close();
@@ -681,6 +691,25 @@ void OpenEval::updateEmployeeFields()
 
     employeeName->setText(employeeNameString);
     employeeDataFile->close();
+
+*/
+
+    if (currentEmployeeID != 0)
+    {
+        QFile employeeDataFile(EMPLOYEEFILE);
+        QString employeeDataString = returnDataString(&employeeDataFile, currentEmployeeID, 0);
+        QStringList employeeDataList = employeeDataString.split(',');
+        QString employeeNameString  = employeeDataList.at(1) + " " + employeeDataList.at(2);
+        employeeName->setText(employeeNameString);
+        enableEmployeeFields();
+    }
+
+    else
+    {
+        employeeName->setText("");
+        disableEmployeeFields();
+    }
+
 
     updateReviewFields();
 }
@@ -776,7 +805,8 @@ void OpenEval::setEmployeeIDForEmployer()
 
     if (!employeeIDVector.isEmpty())
     {
-    //Open the field placements file. Find the first employee employed by this employer. Set this employee ID to be the current.
+    //Open the field placements file. Find the first employee employed by this employer.
+    //Set this employee ID to be the current.
     QFile fieldPlacementsFile(FIELDPLACEMENTSFILE);
     fieldPlacementsFile.open(QIODevice::ReadOnly | QIODevice::Text);
 
@@ -877,6 +907,11 @@ void OpenEval::createMenus()
     editMenu = menuBar()->addMenu(tr("&Edit"));
     editMenu->addAction(editEmployeeAction);
     editMenu->addAction(editEmployerAction);
+    editMenu->addAction(removeEmployeeAction);
+    editMenu->addAction(removeEmployerAction);
+
+    toolsMenu = menuBar()->addMenu(tr("&Tools"));
+    toolsMenu->addAction(reviewEmployeeAction);
 }
 
 void OpenEval::createActions()
@@ -899,4 +934,17 @@ void OpenEval::createActions()
     editEmployerAction = new QAction(tr("Edit Employer"), this);
     editEmployerAction->setStatusTip(tr("Edit employer."));
     connect(editEmployerAction, SIGNAL(triggered()), this, SLOT(editEmployer()));
+
+    removeEmployeeAction = new QAction(tr("Remove Employee"), this);
+    removeEmployeeAction->setStatusTip(tr("Remove the current employee."));
+    connect(removeEmployeeAction, SIGNAL(triggered()), this, SLOT(removeEmployee()));
+
+    removeEmployerAction = new QAction(tr("Remove Employer"), this);
+    removeEmployerAction->setStatusTip(tr("Remove the current employer."));
+    connect(removeEmployerAction, SIGNAL(triggered()), this, SLOT(removeEmployer()));
+
+    reviewEmployeeAction = new QAction(tr("Review Employee"), this);
+    reviewEmployeeAction->setStatusTip(tr("Review the current employee."));
+    connect(reviewEmployeeAction, SIGNAL(triggered()), this, SLOT(reviewEmployee()));
+
 }

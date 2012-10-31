@@ -64,10 +64,14 @@ private:
     QDoubleSpinBox *averageScore;
     QMenu *fileMenu;
     QMenu *editMenu;
+    QMenu *toolsMenu;
     QAction *newEmployeeAction;
     QAction *newEmployerAction;
     QAction *editEmployeeAction;
     QAction *editEmployerAction;
+    QAction *removeEmployeeAction;
+    QAction *removeEmployerAction;
+    QAction *reviewEmployeeAction;
     QKeySequence *newEmployerShortcut;
     QWidget *centralWidget;
     QFile *employeeDataFile;

@@ -15,6 +15,8 @@ class FileOperations
 
 protected:
     QString returnDataString(QFile *file, int currentID, int IDPosition);
+    QString returnFirstString(QFile *file);
+    int returnLastID(QFile *file, int IDPosition);
     void removeEntity(QFile *file, int currentID, int IDPosition);
     QVector<int> generateEmployeeIDVector(int currentEmployerID);
     QVector<int> generateEmployeeIDVector();

@@ -22,6 +22,42 @@ QString FileOperations::returnDataString(QFile *file, int currentID, int IDPosit
     return dataString;
 }
 
+QString FileOperations::returnFirstString(QFile *file)
+{
+    QTextStream dataStream(file);
+
+    file->open(QIODevice::Text | QIODevice::ReadOnly);
+    QString dataString = dataStream.readLine();
+    file->close();
+
+    return dataString;
+}
+
+int returnLastID(QFile *file, int IDPosition)
+{
+
+    QTextStream dataStream(file);
+    file->open(QIODevice::Text | QIODevice::ReadOnly);
+
+    int lastID;
+
+    QStringList dataList;
+    QString dataString = dataStream.readLine();
+
+    while (dataString != "")
+    {
+        dataList = dataString.split(',');
+        lastID = dataList.at(IDPosition).toInt();
+        dataString = dataStream.readLine();
+    }
+
+    file->close();
+
+    return lastID;
+
+    return 0;
+}
+
 void FileOperations::removeEntity(QFile *file, int currentID, int IDPosition)
 {
 

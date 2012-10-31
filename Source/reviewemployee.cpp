@@ -147,6 +147,7 @@ ReviewEmployee::ReviewEmployee(QWidget *parent)
 void ReviewEmployee::submit()
 {
     assignEvaluationID();
+    removeEntity(evaluationResultsDataFile, currentEmployeeID, 1);
 
     evaluationResultsDataFile->open(QIODevice::Text | QIODevice::WriteOnly | QIODevice::Append);
     evaluationResults->operator<<(currentEvaluationID) << "," << currentEmployeeID << "," << currentEmployerID << ","
