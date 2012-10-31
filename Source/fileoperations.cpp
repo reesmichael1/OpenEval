@@ -11,10 +11,17 @@ QString FileOperations::returnDataString(QFile *file, int currentID, int IDPosit
     QString dataString = dataStream.readLine();
     QStringList employeeDataList = dataString.split(',');
 
-    while (employeeDataList.at(IDPosition).toInt() != currentID)
+    if (!dataString.isNull())
     {
-        dataString = dataStream.readLine();
-        employeeDataList = dataString.split(',');
+        while (employeeDataList.at(IDPosition).toInt() != currentID)
+        {
+            dataString = dataStream.readLine();
+            employeeDataList = dataString.split(',');
+        }
+    }
+    else
+    {
+        dataString = "";
     }
 
     file->close();

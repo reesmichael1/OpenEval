@@ -647,7 +647,10 @@ void OpenEval::updateEmployerName()
     QFile employerDataFile(EMPLOYERFILE);
     QString employerDataString = returnDataString(&employerDataFile, currentEmployerID, 0);
 
-    if (!employerDataString.isNull())
+    msgBox.setText(tr("Entering the loop. employerDataString is %1.").arg(employerDataString));
+    msgBox.exec();
+
+    if (employerDataString != "")
     {
         QStringList employerDataList = employerDataString.split(',');
         QString employerNameString  = employerDataList.at(1);
