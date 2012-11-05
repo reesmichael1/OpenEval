@@ -24,6 +24,7 @@ FindEmployee::FindEmployee(QDialog * parent)
 
 void FindEmployee::findEmployee()
 {
+    bool employeeFound = false;
     QFile employeeDataFile(EMPLOYEEFILE);
     QVector<int> employeeIDVector = generateEmployeeIDVector(currentEmployerID);
     QString employeeDataString;
@@ -35,7 +36,17 @@ void FindEmployee::findEmployee()
         {
             QStringList employeeDataList = employeeDataString.split(',');
             *currentEmployeeID = employeeDataList.at(0).toInt();
+            employeeFound = true;
         }
+    }
+
+    if (!employeeFound)
+    {
+        QMessageBox employeeNotFoundBox;
+        employeeNotFoundBox.setText(tr("Sorry, %1 is not an employee of this employer.")
+            .arg(employeeName->text()));
+        employeeNotFoundBox.setWindowTitle(tr("Employee Not Found"));
+        employeeNotFoundBox.exec();
     }
 
 }

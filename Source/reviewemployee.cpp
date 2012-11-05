@@ -5,9 +5,6 @@ ReviewEmployee::ReviewEmployee(QWidget *parent)
     : QDialog(parent)
 {
 
-    evaluationResultsDataFile = new QFile(EVALUATIONRESULTSFILE);
-    evaluationResults = new QTextStream(evaluationResultsDataFile);
-
     assignEvaluationID();
 
     QLabel *employeeNameLabel = new QLabel(tr("Employee Name"));
@@ -147,20 +144,22 @@ ReviewEmployee::ReviewEmployee(QWidget *parent)
 void ReviewEmployee::submit()
 {
     assignEvaluationID();
-    removeEntity(evaluationResultsDataFile, currentEmployeeID, 1);
 
-    evaluationResultsDataFile->open(QIODevice::Text | QIODevice::WriteOnly | QIODevice::Append);
-    evaluationResults->operator<<(currentEvaluationID) << "," << currentEmployeeID << "," << currentEmployerID << ","
-                    << currentEvaluationDate->selectedDate().toString() << ","
-                    << nextEvaluationDate->selectedDate().toString() << ","
-                    << qualityOfWorkScore->value() << "," << workQualityComments->text() << ","
-                    << workHabitsScore->value() << "," << workHabitsComments->text() << ","
-                    << jobKnowledgeScore->value() << "," << jobKnowledgeComments->text() << ","
-                    << behaviorScore->value() << "," << behaviorComments->text() << ","
-                    << averageScore->value() << "," << overallComments->text() << ","
-                    << overallProgress->value() << "," << employmentRecommendation->currentText() << endl;
-    evaluationResultsDataFile->close();
+    QFile evaluationResultsFile(EVALUATIONRESULTSFILE);
+    removeEntity(&evaluationResultsFile, currentEmployeeID, 1);
 
+    QString evaluationResultsString = QString::number(currentEvaluationID) + ","
+                    + currentEmployeeID + "," + currentEmployerID + ","
+                    + currentEvaluationDate->selectedDate().toString() + ","
+                    + nextEvaluationDate->selectedDate().toString() + ","
+                    + qualityOfWorkScore->value() + "," + workQualityComments->text() + ","
+                    + workHabitsScore->value() + "," + workHabitsComments->text() + ","
+                    + jobKnowledgeScore->value() + "," + jobKnowledgeComments->text() + ","
+                    + behaviorScore->value() + "," + behaviorComments->text() + ","
+                    + averageScore->value() + "," + overallComments->text() + ","
+                    + overallProgress->value() + "," + employmentRecommendation->currentText();
+
+    addStringToFile(&evaluationResultsFile, evaluationResultsString);
     clearFields();
 }
 
@@ -174,30 +173,8 @@ void ReviewEmployee::assignEvaluationID()
 {
 
     QFile evaluationResultsFile(EVALUATIONRESULTSFILE);
-    QVector<int> evaluationIDVector = generateIDVector(&evaluationResultsFile);
+    QVector<int> evaluationIDVector = generateIDVector(&evaluationResultsFile, 0);
     currentEvaluationID = returnMaxValue(evaluationIDVector);
-
-/*
-    if (evaluationIDVector.size() == 0)
-    {
-        currentEvaluationID = 1;
-    }
-
-    else
-    {
-        int largestEvaluationID = 1;
-
-        for (int i = 0; i < evaluationIDVector.size(); i++)
-        {
-            if (evaluationIDVector.at(i) > largestEvaluationID)
-            {
-                largestEvaluationID = evaluationIDVector.at(i);
-            }
-        }
-
-        largestEvaluationID++;
-        currentEvaluationID = largestEvaluationID;
-    }*/
 
 }
 

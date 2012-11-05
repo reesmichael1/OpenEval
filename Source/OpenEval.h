@@ -2,7 +2,6 @@
 #define OPENEVAL_H
 
 #include <QtGui>
-#include <QFile>
 #include "NewEmployee.h"
 #include "NewEmployer.h"
 #include "ReviewEmployee.h"
@@ -74,10 +73,6 @@ private:
     QAction *reviewEmployeeAction;
     QKeySequence *newEmployerShortcut;
     QWidget *centralWidget;
-    QFile *employeeDataFile;
-    QFile *employerDataFile;
-    QTextStream *employeeData;
-    QTextStream *employerData;
     NewEmployee newEmployeeWindow;
     NewEmployer newEmployerWindow;
     ReviewEmployee reviewEmployeeWindow;

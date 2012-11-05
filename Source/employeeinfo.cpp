@@ -184,24 +184,6 @@ void EmployeeInfo::setFields()
 
     QFile employerDataFile(EMPLOYERFILE);
 
-/*
-    QTextStream employerData(&employerDataFile);
-
-    employerDataFile.open(QIODevice::Text | QIODevice::ReadOnly);
-
-    QString employerDataString = employerData.readLine();
-    QStringList employerDataList = employerDataString.split(',');
-
-    while (employerDataList.at(0).toInt() != currentEmployerID)
-    {
-        employerDataString = employerData.readLine();
-        employerDataList = employerDataString.split(',');
-    }
-
-    employerDataFile.close();
-
-*/
-
     QString employerDataString = returnDataString(&employerDataFile, currentEmployerID, 0);
     QStringList employerDataList = employerDataString.split(',');
 
@@ -333,16 +315,14 @@ void EmployeeInfo::submitEdits()
 
     removeEntity(&employeeDataFile, currentEmployeeID, 0);
 
-    QTextStream employeeData(&employeeDataFile);
+    QString employeeDataString = QString::number(currentEmployeeID)
+                            + "," + employeeFirstName->text() + "," + employeeLastName->text()
+                            + "," + employeeEMail->text() + "," + employeePhone->text()
+                            + "," + employeeCell->text() + "," + employeeAddress->text()
+                            + "," + employeeCity->text() + "," + employeeState->text()
+                            + "," + employeeZipCode->text();
 
-    employeeDataFile.open(QIODevice::Text | QIODevice::WriteOnly | QIODevice::Append);
-    employeeData << currentEmployeeID << "," << employeeFirstName->text() << "," << employeeLastName->text()
-                            << "," << employeeEMail->text() << "," << employeePhone->text()
-                            << "," << employeeCell->text() << "," << employeeAddress->text()
-                            << "," << employeeCity->text() << "," << employeeState->text()
-                            << "," << employeeZipCode->text() << endl;
-
-    employeeDataFile.close();
+    addStringToFile(&employeeDataFile, employeeDataString);
 }
 
 void EmployeeInfo::cancelEdits()

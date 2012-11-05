@@ -145,16 +145,15 @@ void EmployerInfo::submitEdits()
 {
     QFile employerDataFile(EMPLOYERFILE);
     removeEntity(&employerDataFile, currentEmployerID, 0);
-    QTextStream employerData(&employerDataFile);
 
-    employerDataFile.open(QIODevice::Text | QIODevice::WriteOnly | QIODevice::Append);
+    QString employerDataString = QString::number(currentEmployerID) + ","
+                        + employerName->text() + "," + employerAddress->text()
+                        + "," + employerCity->text() + "," + employerState->text()
+                        + "," + employerZipCode->text() + "," + employerPhone->text()
+                        + "," + employerEMail->text() + "," + employerContact->text();
 
-    employerData << currentEmployerID << "," << employerName->text() << "," << employerAddress->text()
-                        << "," << employerCity->text() << "," << employerState->text()
-                        << "," << employerZipCode->text() << "," << employerPhone->text()
-                        << "," << employerEMail->text() << "," << employerContact->text() << endl;
+    addStringToFile(&employerDataFile, employerDataString);
 
-    employerDataFile.close();
     setMode(ViewingMode);
 }
 

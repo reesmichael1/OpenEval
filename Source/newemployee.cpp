@@ -5,13 +5,6 @@ NewEmployee::NewEmployee(QWidget *parent)
     : QDialog(parent)
 {
 
-    employerDataFile = new QFile(EMPLOYERFILE);
-    employeeDataFile = new QFile(EMPLOYEEFILE);
-    fieldPlacementsFile = new QFile(FIELDPLACEMENTSFILE);
-    employerData = new QTextStream(employerDataFile);
-    employeeData = new QTextStream(employeeDataFile);
-    fieldPlacementsData = new QTextStream(fieldPlacementsFile);
-
     assignEmployeeID();
 
     QLabel *firstNameLabel = new QLabel(tr("First Name"));
@@ -101,67 +94,38 @@ void NewEmployee::addEmployers()
 
     employeeEmployer->clear();
 
-    employerDataFile->open(QIODevice::Text | QIODevice::ReadOnly);
-    QString employerDataString = employerDataFile->readLine();
+    QFile employerDataFile(EMPLOYERFILE);
+    QVector<int> employerIDVector = generateIDVector(&employerDataFile, 0);
 
-    while(employerDataString != "")
+    for (int i = 0; i < employerIDVector.size(); i++)
     {
+        QString employerDataString = returnDataString(&employerDataFile, employerIDVector.at(i), 0);
         QStringList employerDataList = employerDataString.split(',');
-        QString employerNameString = employerDataList.at(1);
-        employeeEmployer->addItem(employerNameString);
-        employerDataString = employerData->readLine();
+        employeeEmployer->addItem(employerDataList.at(1));
     }
-
-    employerDataFile->close();
 
 }
 
 void NewEmployee::assignEmployeeID()
 {
-
-    QVector<int> employeeIDVector = generateEmployeeIDVector();
+    QFile employeeDataFile(EMPLOYEEFILE);
+    QVector<int> employeeIDVector = generateIDVector(&employeeDataFile, 0);
     employeeID = returnMaxValue(employeeIDVector);
-
-/*
-    if (employeeIDVector.size() == 0)
-    {
-        employeeID = 1;
-    }
-
-    else
-    {
-        int largestEmployeeID = 1;
-
-        for (int i = 0; i < employeeIDVector.size(); i++)
-        {
-            if (employeeIDVector.at(i) > largestEmployeeID)
-            {
-                largestEmployeeID = employeeIDVector.at(i);
-            }
-        }
-
-        largestEmployeeID++;
-        employeeID = largestEmployeeID;
-    }*/
-}
-
-int NewEmployee::setEmployeeInfo(int currentEmployeeID)
-{
-    //Someday this function will do something. I promise.
-    return currentEmployeeID;
 }
 
 void NewEmployee::writeEmployeeData()
 {
 
-    employeeDataFile->open(QIODevice::Text | QIODevice::WriteOnly | QIODevice::Append);
-    employeeData->operator <<(employeeID) << "," << employeeFirstName->text() << "," << employeeLastName->text()
-                            << "," << employeeEMail->text() << "," << employeePhone->text()
-                            << "," << employeeCell->text() << "," << employeeAddress->text()
-                            << "," << employeeCity->text() << "," << employeeState->text()
-                            << "," << employeeZipCode->text() << endl;
 
-    employeeDataFile->close();
+    QFile employeeDataFile(EMPLOYEEFILE);
+
+    QString employeeDataString =  QString::number(employeeID) + "," + employeeFirstName->text() + ","
+                            + employeeLastName->text() + "," + employeeEMail->text() + ","
+                            + employeePhone->text() + "," + employeeCell->text() + ","
+                            + employeeAddress->text() + "," + employeeCity->text() + ","
+                            + employeeState->text() + "," + employeeZipCode->text();
+
+    addStringToFile(&employeeDataFile, employeeDataString);
 
     employEmployee();
 }
@@ -169,22 +133,18 @@ void NewEmployee::writeEmployeeData()
 void NewEmployee::employEmployee()
 {
     QString employer = employeeEmployer->currentText();
-    employerDataFile->open(QIODevice::Text | QIODevice::ReadOnly);
-    QString employerNameString = employerDataFile->readLine();
-    QStringList employerDataList = employerNameString.split(',');
-    while(employerDataList.at(1) != employer)
-    {
-        employerNameString = employerDataFile->readLine();
-        employerDataList = employerNameString.split(',');
-    }
+    QFile employerDataFile(EMPLOYERFILE);
 
-    employerDataFile->close();
+    QString employerDataString = returnLineWithString(&employerDataFile, employer, 1);
+    QStringList employerDataList = employerDataString.split(',');
 
     int employerID = employerDataList.at(0).toInt();
 
-    fieldPlacementsFile->open(QIODevice::Text | QIODevice::WriteOnly | QIODevice::Append);
-    fieldPlacementsData->operator <<(employeeID) << "," << employerID << endl;
-    fieldPlacementsFile->close();
+    QString fieldPlacementsString = QString::number(employeeID) + "," + QString::number(employerID);
+
+    QFile fieldPlacementsFile(FIELDPLACEMENTSFILE);
+    addStringToFile(&fieldPlacementsFile, fieldPlacementsString);
+
 }
 
 void NewEmployee::clearFields()

@@ -16,12 +16,15 @@ class FileOperations
 protected:
     QString returnDataString(QFile *file, int currentID, int IDPosition);
     QString returnFirstString(QFile *file);
+    QString returnLineWithString(QFile *file, QString string, int stringPosition);
     int returnLastID(QFile *file, int IDPosition);
-    void removeEntity(QFile *file, int currentID, int IDPosition);
     QVector<int> generateEmployeeIDVector(int currentEmployerID);
-    QVector<int> generateEmployeeIDVector();
-    QVector<int> generateIDVector(QFile *file);
+    //QVector<int> generateEmployeeIDVector();
+    //QVector<int> generateEmployerIDVector();
+    QVector<int> generateIDVector(QFile *file, int IDPosition);
     int returnMaxValue(QVector<int> IDVector);
+    void addStringToFile(QFile *file, QString string);
+    void removeEntity(QFile *file, int currentID, int IDPosition);
 };
 
 #endif // FILEOPERATIONS_H

@@ -2,11 +2,9 @@
 #define NEWEMPLOYER_H
 
 #include <QDialog>
-#include <QFile>
 #include "FileOperations.h"
 
 class QLineEdit;
-class QTextStream;
 
 class NewEmployer : public QDialog, private FileOperations
 {
@@ -40,10 +38,6 @@ private:
     QLineEdit *employerContact;
     QPushButton *submitButton;
     QPushButton *cancelButton;
-    QFile *employerDataFile;
-    //QFile *employerIDDataFile;
-    QTextStream *employerData;
-    //QTextStream *employerIDData;
     void assignEmployerID();
     void writeEmployerData();
     void setReadOnly();

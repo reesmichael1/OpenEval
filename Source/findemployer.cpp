@@ -26,7 +26,7 @@ FindEmployer::FindEmployer(QDialog * parent)
 void FindEmployer::findEmployer()
 {
     QFile employerDataFile(EMPLOYERFILE);
-    QVector<int> employerIDVector = generateIDVector(&employerDataFile);
+    QVector<int> employerIDVector = generateIDVector(&employerDataFile, 0);
     QString employerDataString;
 
     for (int i = 0; i < employerIDVector.size(); i++)

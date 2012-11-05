@@ -4,21 +4,25 @@
 QString FileOperations::returnDataString(QFile *file, int currentID, int IDPosition)
 {
 
-    QTextStream dataStream(file);
+    QString dataString;
+    QVector<int> IDVector = generateIDVector(file, IDPosition);
 
-    file->open(QIODevice::Text | QIODevice::ReadOnly);
-
-    QString dataString = dataStream.readLine();
-    QStringList employeeDataList = dataString.split(',');
-
-    if (!dataString.isNull())
+    if (IDVector.contains(currentID))
     {
+        QTextStream dataStream(file);
+
+        file->open(QIODevice::Text | QIODevice::ReadOnly);
+
+        dataString = dataStream.readLine();
+        QStringList employeeDataList = dataString.split(',');
+
         while (employeeDataList.at(IDPosition).toInt() != currentID)
         {
             dataString = dataStream.readLine();
             employeeDataList = dataString.split(',');
         }
     }
+
     else
     {
         dataString = "";
@@ -38,31 +42,61 @@ QString FileOperations::returnFirstString(QFile *file)
     file->close();
 
     return dataString;
+
 }
 
-int returnLastID(QFile *file, int IDPosition)
+QString FileOperations::returnLineWithString(QFile *file, QString string, int stringPosition)
+{
+    file->open(QIODevice::Text | QIODevice::ReadOnly);
+
+    QTextStream dataStream(file);
+
+    QString dataString = dataStream.readLine();
+    QStringList dataStringList = dataString.split(',');
+    while (dataStringList.at(stringPosition) != string)
+    {
+        dataString = dataStream.readLine();
+        dataStringList = dataString.split(',');
+    }
+
+    file->close();
+
+    return dataString;
+}
+
+
+int FileOperations::returnLastID(QFile *file, int IDPosition)
 {
 
     QTextStream dataStream(file);
     file->open(QIODevice::Text | QIODevice::ReadOnly);
 
-    int lastID;
-
-    QStringList dataList;
+    QStringList dataStringList;
     QString dataString = dataStream.readLine();
+    int lastID;
 
     while (dataString != "")
     {
-        dataList = dataString.split(',');
-        lastID = dataList.at(IDPosition).toInt();
+        dataStringList = dataString.split(',');
+        lastID = dataStringList.at(IDPosition).toInt();
         dataString = dataStream.readLine();
     }
+
 
     file->close();
 
     return lastID;
+}
 
-    return 0;
+void FileOperations::addStringToFile(QFile *file, QString string)
+{
+    QTextStream dataStream(file);
+
+    file->open(QIODevice::Text | QIODevice::WriteOnly | QIODevice::Append);
+
+    dataStream << string << endl;
+
+    file->close();
 }
 
 void FileOperations::removeEntity(QFile *file, int currentID, int IDPosition)
@@ -109,21 +143,6 @@ void FileOperations::removeEntity(QFile *file, int currentID, int IDPosition)
     fileBackup.rename(fileName);
 
     fileBackup.open(QIODevice::Text | QIODevice::ReadOnly);
-
-    /*if (backupStream.readLine().isNull())
-    {
-        fileBackup.close();
-        fileBackup.remove();
-        QFile newFile(fileName);
-        newFile.open(QIODevice::Text | QIODevice::WriteOnly);
-        newFile.close();
-    }
-
-    else
-    {
-        fileBackup.close();
-    }*/
-
 }
 
 QVector<int> FileOperations::generateEmployeeIDVector(int currentEmployerID)
@@ -151,6 +170,36 @@ QVector<int> FileOperations::generateEmployeeIDVector(int currentEmployerID)
 
     return employeeIDVector;
 }
+/*
+QVector<int> FileOperations::generateEmployerIDVector()
+{/*
+    QVector<int> employerIDVector;
+
+    QFile employerDataFile(EMPLOYERFILE);
+    QTextStream employerData(&employerDataFile);
+
+    employerDataFile.open(QIODevice::Text | QIODevice::ReadOnly);
+
+    QString employerDataString = employerData.readLine();
+    QStringList employerDataList;
+
+    while (employerDataString != "")
+    {
+        employerDataList = employerDataString.split(',');
+        employerIDVector.append(employerDataList.at(0).toInt());
+        employerDataString = employerData.readLine();
+    }
+
+    employerDataFile.close();
+
+    return employerIDVector;
+
+    QVector<int> employerIDVector = generateIDVector(&employerDataFile, 0);
+
+    return employerIDVector;
+
+}
+
 
 QVector<int> FileOperations::generateEmployeeIDVector()
 {
@@ -174,11 +223,12 @@ QVector<int> FileOperations::generateEmployeeIDVector()
     employeeDataFile.close();
 
     return employeeIDVector;
-}
 
-QVector<int> FileOperations::generateIDVector(QFile *file)
+}
+*/
+QVector<int> FileOperations::generateIDVector(QFile *file, int IDPosition)
 {
-    QVector<int> employerIDVector;
+    QVector<int> IDVector;
 
     QTextStream dataStream(file);
 
@@ -190,13 +240,13 @@ QVector<int> FileOperations::generateIDVector(QFile *file)
     while (employerDataString != "")
     {
         employerDataList = employerDataString.split(',');
-        employerIDVector.append(employerDataList.at(0).toInt());
+        IDVector.append(employerDataList.at(IDPosition).toInt());
         employerDataString = dataStream.readLine();
     }
 
     file->close();
 
-    return employerIDVector;
+    return IDVector;
 }
 
 int FileOperations::returnMaxValue(QVector<int> IDVector)

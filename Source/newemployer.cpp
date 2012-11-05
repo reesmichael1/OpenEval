@@ -4,12 +4,6 @@
 NewEmployer::NewEmployer(QWidget *parent)
     : QDialog(parent)
 {
-    employerDataFile = new QFile(EMPLOYERFILE);
-    //employerIDDataFile = new QFile(EMPLOYERIDFILE);
-
-    //Declare streams to read and write the next employer ID.
-    //employerIDData = new QTextStream(employerIDDataFile);
-    employerData = new QTextStream(employerDataFile);
 
     assignEmployerID();
 
@@ -86,61 +80,22 @@ void NewEmployer::submit()
 
 void NewEmployer::writeEmployerData()
 {
-    employerDataFile->open(QIODevice::Text | QIODevice::WriteOnly | QIODevice::Append);
+    QFile employerDataFile(EMPLOYERFILE);
 
-    employerData->operator <<(employerID) << "," << employerName->text() << "," << employerAddress->text()
-                        << "," << employerCity->text() << "," << employerState->text()
-                        << "," << employerZipCode->text() << "," << employerPhone->text()
-                        << "," << employerEMail->text() << "," << employerContact->text() << endl;
+    QString employerDataString = QString::number(employerID) + "," + employerName->text() + ","
+                        + employerAddress->text() + "," + employerCity->text()
+                        + "," + employerState->text() + "," + employerZipCode->text()
+                        + "," + employerPhone->text() + "," + employerEMail->text() + ","
+                        + employerContact->text();
 
-    employerDataFile->close();
-/*
-    //Increment the employer ID and update EMPLOYERID.txt.
-    employerID++;
-    employerIDDataFile->open(QIODevice::Text | QIODevice::WriteOnly | QIODevice::Truncate);
-    employerIDData->operator <<(employerID);
-    employerIDDataFile->close();*/
+    addStringToFile(&employerDataFile, employerDataString);
 }
 
 void NewEmployer::assignEmployerID()
-{/*
-    employerIDDataFile->open(QIODevice::Text | QIODevice::ReadWrite);
-    QString employerIDString = employerIDData->readLine();
-    if (employerIDString == "")
-    {
-        employerID = 1;
-        employerIDData->operator <<(employerID);
-    }
-    else
-    {
-        employerID = employerIDString.toInt();
-    }
-    employerIDDataFile->close();*/
-
+{
     QFile employerDataFile(EMPLOYERFILE);
-    QVector<int> employerIDVector = generateIDVector(&employerDataFile);
+    QVector<int> employerIDVector = generateIDVector(&employerDataFile, 0);
     employerID = returnMaxValue(employerIDVector);
-/*
-    if (employerIDVector.size() == 0)
-    {
-        employerID = 1;
-    }
-
-    else
-    {
-        int largestEmployerID = 1;
-
-        for (int i = 0; i < employerIDVector.size(); i++)
-        {
-            if (employerIDVector.at(i) > largestEmployerID)
-            {
-                largestEmployerID = employerIDVector.at(i);
-            }
-        }
-
-        largestEmployerID++;
-        employerID = largestEmployerID;
-    }*/
 }
 
 void NewEmployer::clearFields()

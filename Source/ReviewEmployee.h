@@ -9,8 +9,6 @@ class QLineEdit;
 class QSpinBox;
 class QDoubleSpinBox;
 class QCalendarWidget;
-class QFile;
-class QTextStream;
 class QComboBox;
 
 class ReviewEmployee : public QDialog, private FileOperations
@@ -47,8 +45,6 @@ private:
     QSpinBox *overallProgress;
     QDoubleSpinBox *averageScore;
     QComboBox *employmentRecommendation;
-    QFile *evaluationResultsDataFile;
-    QTextStream *evaluationResults;
     QCalendarWidget *currentEvaluationDate;
     QCalendarWidget *nextEvaluationDate;
     void clearFields();
