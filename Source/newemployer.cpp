@@ -82,10 +82,10 @@ void NewEmployer::writeEmployerData()
 {
     QFile employerDataFile(EMPLOYERFILE);
 
-    QString employerDataString = QString::number(employerID) + "," + employerName->text() + ","
-                        + employerAddress->text() + "," + employerCity->text()
-                        + "," + employerState->text() + "," + employerZipCode->text()
-                        + "," + employerPhone->text() + "," + employerEMail->text() + ","
+    QString employerDataString = QString::number(employerID) + "\",\"" + employerName->text() + "\",\""
+                        + employerAddress->text() + "\",\"" + employerCity->text()
+                        + "\",\"" + employerState->text() + "\",\"" + employerZipCode->text()
+                        + "\",\"" + employerPhone->text() + "\",\"" + employerEMail->text() + "\",\""
                         + employerContact->text();
 
     addStringToFile(&employerDataFile, employerDataString);

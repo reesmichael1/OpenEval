@@ -12,11 +12,16 @@ FindEmployer::FindEmployer(QDialog * parent)
     connect(findEmployerButton, SIGNAL(clicked()), this, SLOT(accept()));
     connect(findEmployerButton, SIGNAL(clicked()), this, SLOT(findEmployer()));
 
+    cancelButton = new QPushButton(tr("Cancel"));
+    connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancel()));
+    connect(cancelButton, SIGNAL(clicked()), this, SLOT(hide()));
+
     QHBoxLayout *mainLayout = new QHBoxLayout;
 
     mainLayout->addWidget(employerNameLabel);
     mainLayout->addWidget(employerName);
     mainLayout->addWidget(findEmployerButton);
+    mainLayout->addWidget(cancelButton);
 
     setLayout(mainLayout);
     setWindowTitle(tr("Find Employer"));
@@ -34,11 +39,16 @@ void FindEmployer::findEmployer()
         employerDataString = returnDataString(&employerDataFile, employerIDVector.at(i), 0);
         if (employerDataString.contains(employerName->text()))
         {
-            QStringList employerDataList = employerDataString.split(',');
+            QStringList employerDataList = employerDataString.split("\",\"");
             *currentEmployerID = employerDataList.at(0).toInt();
         }
     }
 
+}
+
+void FindEmployer::cancel()
+{
+    employerName->setText("");
 }
 
 void FindEmployer::setEmployerID(int *employerID)

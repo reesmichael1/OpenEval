@@ -100,7 +100,7 @@ void NewEmployee::addEmployers()
     for (int i = 0; i < employerIDVector.size(); i++)
     {
         QString employerDataString = returnDataString(&employerDataFile, employerIDVector.at(i), 0);
-        QStringList employerDataList = employerDataString.split(',');
+        QStringList employerDataList = employerDataString.split("\",\"");
         employeeEmployer->addItem(employerDataList.at(1));
     }
 
@@ -119,11 +119,11 @@ void NewEmployee::writeEmployeeData()
 
     QFile employeeDataFile(EMPLOYEEFILE);
 
-    QString employeeDataString =  QString::number(employeeID) + "," + employeeFirstName->text() + ","
-                            + employeeLastName->text() + "," + employeeEMail->text() + ","
-                            + employeePhone->text() + "," + employeeCell->text() + ","
-                            + employeeAddress->text() + "," + employeeCity->text() + ","
-                            + employeeState->text() + "," + employeeZipCode->text();
+    QString employeeDataString =  QString::number(employeeID) + "\",\"" + employeeFirstName->text() + "\",\""
+                            + employeeLastName->text() + "\",\"" + employeeEMail->text() + "\",\""
+                            + employeePhone->text() + "\",\"" + employeeCell->text() + "\",\""
+                            + employeeAddress->text() + "\",\"" + employeeCity->text() + "\",\""
+                            + employeeState->text() + "\",\"" + employeeZipCode->text();
 
     addStringToFile(&employeeDataFile, employeeDataString);
 
@@ -136,11 +136,11 @@ void NewEmployee::employEmployee()
     QFile employerDataFile(EMPLOYERFILE);
 
     QString employerDataString = returnLineWithString(&employerDataFile, employer, 1);
-    QStringList employerDataList = employerDataString.split(',');
+    QStringList employerDataList = employerDataString.split("\",\"");
 
     int employerID = employerDataList.at(0).toInt();
 
-    QString fieldPlacementsString = QString::number(employeeID) + "," + QString::number(employerID);
+    QString fieldPlacementsString = QString::number(employeeID) + "\",\"" + QString::number(employerID);
 
     QFile fieldPlacementsFile(FIELDPLACEMENTSFILE);
     addStringToFile(&fieldPlacementsFile, fieldPlacementsString);

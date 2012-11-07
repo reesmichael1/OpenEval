@@ -71,7 +71,6 @@ private:
     QAction *removeEmployeeAction;
     QAction *removeEmployerAction;
     QAction *reviewEmployeeAction;
-    QKeySequence *newEmployerShortcut;
     QWidget *centralWidget;
     NewEmployee newEmployeeWindow;
     NewEmployer newEmployerWindow;

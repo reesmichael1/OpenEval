@@ -14,21 +14,22 @@ QString FileOperations::returnDataString(QFile *file, int currentID, int IDPosit
         file->open(QIODevice::Text | QIODevice::ReadOnly);
 
         dataString = dataStream.readLine();
-        QStringList employeeDataList = dataString.split(',');
+        QStringList employeeDataList = dataString.split("\",\"");
 
         while (employeeDataList.at(IDPosition).toInt() != currentID)
         {
             dataString = dataStream.readLine();
-            employeeDataList = dataString.split(',');
+            employeeDataList = dataString.split("\",\"");
         }
+
+    file->close();
+
     }
 
     else
     {
         dataString = "";
     }
-
-    file->close();
 
     return dataString;
 }
@@ -52,11 +53,11 @@ QString FileOperations::returnLineWithString(QFile *file, QString string, int st
     QTextStream dataStream(file);
 
     QString dataString = dataStream.readLine();
-    QStringList dataStringList = dataString.split(',');
+    QStringList dataStringList = dataString.split("\",\"");
     while (dataStringList.at(stringPosition) != string)
     {
         dataString = dataStream.readLine();
-        dataStringList = dataString.split(',');
+        dataStringList = dataString.split("\",\"");
     }
 
     file->close();
@@ -77,7 +78,7 @@ int FileOperations::returnLastID(QFile *file, int IDPosition)
 
     while (dataString != "")
     {
-        dataStringList = dataString.split(',');
+        dataStringList = dataString.split("\",\"");
         lastID = dataStringList.at(IDPosition).toInt();
         dataString = dataStream.readLine();
     }
@@ -110,7 +111,7 @@ void FileOperations::removeEntity(QFile *file, int currentID, int IDPosition)
     file->open(QIODevice::Text | QIODevice::ReadOnly);
 
     QString dataString = originalStream.readLine();
-    QStringList dataList = dataString.split(',');
+    QStringList dataList = dataString.split("\",\"");
 
     if (dataString != "")
     {
@@ -122,7 +123,7 @@ void FileOperations::removeEntity(QFile *file, int currentID, int IDPosition)
             }
 
             dataString = originalStream.readLine();
-            dataList = dataString.split(',');
+            dataList = dataString.split("\",\"");
         } while (dataString != "");
     }
 
@@ -158,7 +159,7 @@ QVector<int> FileOperations::generateEmployeeIDVector(int currentEmployerID)
 
     while (fieldPlacementsString != "")
     {
-        fieldPlacementsList = fieldPlacementsString.split(',');
+        fieldPlacementsList = fieldPlacementsString.split("\",\"");
         if (fieldPlacementsList.at(1).toInt() == currentEmployerID)
         {
             employeeIDVector.append(fieldPlacementsList.at(0).toInt());
@@ -185,7 +186,7 @@ QVector<int> FileOperations::generateEmployerIDVector()
 
     while (employerDataString != "")
     {
-        employerDataList = employerDataString.split(',');
+        employerDataList = employerDataString.split("\",\"");
         employerIDVector.append(employerDataList.at(0).toInt());
         employerDataString = employerData.readLine();
     }
@@ -215,7 +216,7 @@ QVector<int> FileOperations::generateEmployeeIDVector()
 
     while (employeeDataString != "")
     {
-        employeeDataList = employeeDataString.split(',');
+        employeeDataList = employeeDataString.split("\",\"");
         employeeIDVector.append(employeeDataList.at(0).toInt());
         employeeDataString = employeeData.readLine();
     }
@@ -239,7 +240,7 @@ QVector<int> FileOperations::generateIDVector(QFile *file, int IDPosition)
 
     while (employerDataString != "")
     {
-        employerDataList = employerDataString.split(',');
+        employerDataList = employerDataString.split("\",\"");
         IDVector.append(employerDataList.at(IDPosition).toInt());
         employerDataString = dataStream.readLine();
     }

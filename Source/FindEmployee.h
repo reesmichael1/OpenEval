@@ -18,12 +18,14 @@ public:
 
 public slots:
     void findEmployee();
+    void cancel();
 
 private:
     int *currentEmployeeID;
     int currentEmployerID;
     QLineEdit *employeeName;
     QPushButton *findEmployeeButton;
+    QPushButton *cancelButton;
 
 };
 

@@ -12,11 +12,16 @@ FindEmployee::FindEmployee(QDialog * parent)
     connect(findEmployeeButton, SIGNAL(clicked()), this, SLOT(accept()));
     connect(findEmployeeButton, SIGNAL(clicked()), this, SLOT(findEmployee()));
 
+    cancelButton = new QPushButton(tr("Cancel"));
+    connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancel()));
+    connect(cancelButton, SIGNAL(clicked()), this, SLOT(hide()));
+
     QHBoxLayout *mainLayout = new QHBoxLayout;
 
     mainLayout->addWidget(employeeNameLabel);
     mainLayout->addWidget(employeeName);
     mainLayout->addWidget(findEmployeeButton);
+    mainLayout->addWidget(cancelButton);
 
     setLayout(mainLayout);
     setWindowTitle(tr("Find Employee"));
@@ -34,7 +39,7 @@ void FindEmployee::findEmployee()
         employeeDataString = returnDataString(&employeeDataFile, employeeIDVector.at(i), 0);
         if (employeeDataString.contains(employeeName->text()))
         {
-            QStringList employeeDataList = employeeDataString.split(',');
+            QStringList employeeDataList = employeeDataString.split("\",\"");
             *currentEmployeeID = employeeDataList.at(0).toInt();
             employeeFound = true;
         }
@@ -49,6 +54,11 @@ void FindEmployee::findEmployee()
         employeeNotFoundBox.exec();
     }
 
+}
+
+void FindEmployee::cancel()
+{
+    employeeName->setText("");
 }
 
 void FindEmployee::setEmployeeID(int *employeeID, int employerID)

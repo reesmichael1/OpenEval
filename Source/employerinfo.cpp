@@ -89,7 +89,7 @@ void EmployerInfo::setFields()
 {
     QFile employerDataFile(EMPLOYERFILE);
     QString employerDataString = returnDataString(&employerDataFile, currentEmployerID, 0);
-    QStringList employerDataList = employerDataString.split(',');
+    QStringList employerDataList = employerDataString.split("\",\"");
 
     employerName->setText(employerDataList.at(1));
     employerAddress->setText(employerDataList.at(2));
@@ -146,11 +146,11 @@ void EmployerInfo::submitEdits()
     QFile employerDataFile(EMPLOYERFILE);
     removeEntity(&employerDataFile, currentEmployerID, 0);
 
-    QString employerDataString = QString::number(currentEmployerID) + ","
-                        + employerName->text() + "," + employerAddress->text()
-                        + "," + employerCity->text() + "," + employerState->text()
-                        + "," + employerZipCode->text() + "," + employerPhone->text()
-                        + "," + employerEMail->text() + "," + employerContact->text();
+    QString employerDataString = QString::number(currentEmployerID) + "\",\""
+                        + employerName->text() + "\",\"" + employerAddress->text()
+                        + "\",\"" + employerCity->text() + "\",\"" + employerState->text()
+                        + "\",\"" + employerZipCode->text() + "\",\"" + employerPhone->text()
+                        + "\",\"" + employerEMail->text() + "\",\"" + employerContact->text();
 
     addStringToFile(&employerDataFile, employerDataString);
 

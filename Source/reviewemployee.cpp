@@ -148,16 +148,16 @@ void ReviewEmployee::submit()
     QFile evaluationResultsFile(EVALUATIONRESULTSFILE);
     removeEntity(&evaluationResultsFile, currentEmployeeID, 1);
 
-    QString evaluationResultsString = QString::number(currentEvaluationID) + ","
-                    + currentEmployeeID + "," + currentEmployerID + ","
-                    + currentEvaluationDate->selectedDate().toString() + ","
-                    + nextEvaluationDate->selectedDate().toString() + ","
-                    + qualityOfWorkScore->value() + "," + workQualityComments->text() + ","
-                    + workHabitsScore->value() + "," + workHabitsComments->text() + ","
-                    + jobKnowledgeScore->value() + "," + jobKnowledgeComments->text() + ","
-                    + behaviorScore->value() + "," + behaviorComments->text() + ","
-                    + averageScore->value() + "," + overallComments->text() + ","
-                    + overallProgress->value() + "," + employmentRecommendation->currentText();
+    QString evaluationResultsString = QString::number(currentEvaluationID) + "\",\""
+                    + QString::number(currentEmployeeID) + "\",\"" + currentEmployerID + "\",\""
+                    + currentEvaluationDate->selectedDate().toString() + "\",\""
+                    + nextEvaluationDate->selectedDate().toString() + "\",\""
+                    + qualityOfWorkScore->value() + "\",\"" + workQualityComments->text() + "\",\""
+                    + workHabitsScore->value() + "\",\"" + workHabitsComments->text() + "\",\""
+                    + jobKnowledgeScore->value() + "\",\"" + jobKnowledgeComments->text() + "\",\""
+                    + behaviorScore->value() + "\",\"" + behaviorComments->text() + "\",\""
+                    + averageScore->value() + "\",\"" + overallComments->text() + "\",\""
+                    + overallProgress->value() + "\",\"" + employmentRecommendation->currentText();
 
     addStringToFile(&evaluationResultsFile, evaluationResultsString);
     clearFields();
@@ -219,7 +219,7 @@ void ReviewEmployee::setEmployeeName()
 
     do
     {
-        employeeDataList = employeeDataString.split(',');
+        employeeDataList = employeeDataString.split("\",\"");
         employeeNameString = employeeDataList.at(1) + " " + employeeDataList.at(2);
         employeeDataString = employeeData.readLine();
     } while (currentEmployeeID != employeeDataList.at(0).toInt());
@@ -240,7 +240,7 @@ void ReviewEmployee::setEmployerName()
 
     do
     {
-        employerDataList = employerDataString.split(',');
+        employerDataList = employerDataString.split("\",\"");
         employerNameString = employerDataList.at(1);
         employerDataString = employerData.readLine();
     } while (currentEmployerID != employerDataList.at(0).toInt());

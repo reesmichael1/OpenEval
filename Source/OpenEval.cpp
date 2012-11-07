@@ -623,7 +623,7 @@ void OpenEval::updateEmployerName()
 
     if (employerDataString != "")
     {
-        QStringList employerDataList = employerDataString.split(',');
+        QStringList employerDataList = employerDataString.split("\",\"");
         QString employerNameString  = employerDataList.at(1);
         employerName->setText(employerNameString);
         enableEmployerFields();
@@ -645,7 +645,7 @@ void OpenEval::updateEmployeeFields()
     {
         QFile employeeDataFile(EMPLOYEEFILE);
         QString employeeDataString = returnDataString(&employeeDataFile, currentEmployeeID, 0);
-        QStringList employeeDataList = employeeDataString.split(',');
+        QStringList employeeDataList = employeeDataString.split("\",\"");
         QString employeeNameString  = employeeDataList.at(1) + " " + employeeDataList.at(2);
         employeeName->setText(employeeNameString);
         enableEmployeeFields();
@@ -669,7 +669,7 @@ void OpenEval::updateReviewFields()
 
     if (evaluationResultsString != "")
     {
-        QStringList evaluationResultsList = evaluationResultsString.split(',');
+        QStringList evaluationResultsList = evaluationResultsString.split("\",\"");
         qualityOfWorkScore->setValue(evaluationResultsList.at(5).toInt());
         workHabitsScore->setValue(evaluationResultsList.at(7).toInt());
         jobKnowledgeScore->setValue(evaluationResultsList.at(9).toInt());
@@ -697,7 +697,7 @@ void OpenEval::setFirstEmployeeID()
 
     if (employeeDataString != "")
     {
-        employeeDataList = employeeDataString.split(',');
+        employeeDataList = employeeDataString.split("\",\"");
         currentEmployeeID = employeeDataList.at(0).toInt();
         enableEmployeeFields();
     }
@@ -720,7 +720,7 @@ void OpenEval::setFirstEmployerID()
 
     if (employerDataString != "")
     {
-        employerDataList = employerDataString.split(',');
+        employerDataList = employerDataString.split("\",\"");
         currentEmployerID = employerDataList.at(0).toInt();
         enableEmployerFields();
     }
@@ -744,7 +744,7 @@ void OpenEval::setEmployeeIDForEmployer()
         //Set this employee ID to be the current.
         QFile fieldPlacementsFile(FIELDPLACEMENTSFILE);
         QString fieldPlacementsString = returnDataString(&fieldPlacementsFile, currentEmployerID, 1);
-        QStringList fieldPlacementsList = fieldPlacementsString.split(',');
+        QStringList fieldPlacementsList = fieldPlacementsString.split("\",\"");
         currentEmployeeID = fieldPlacementsList.at(0).toInt();
     }
 
@@ -846,8 +846,8 @@ void OpenEval::createActions()
 
     newEmployerAction = new QAction(tr("New Employer"), this);
     newEmployerAction->setStatusTip(tr("Create a new employer."));
-    //newEmployerShortcut = new QKeySequence(Qt::Key_Control + Qt::Key_Shift + Qt::Key_N);
-    //newEmployerAction->setShortcut(QKeyShortcut);
+    //QKeySequence newEmployerShortcut(Qt::Key_Control + Qt::Key_Shift + Qt::Key_N);
+    newEmployerAction->setShortcut(Qt::Key_Control + Qt::Key_Shift + Qt::Key_N);
     connect(newEmployerAction, SIGNAL(triggered()), this, SLOT(addEmployer()));
 
     editEmployeeAction = new QAction(tr("Edit Employee"), this);
