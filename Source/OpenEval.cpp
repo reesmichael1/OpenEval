@@ -188,6 +188,9 @@ OpenEval::OpenEval()
 void OpenEval::addEmployee()
 {
     //Show dialog box to add a new employee.
+    int *employerID = &currentEmployerID;
+
+    newEmployeeWindow.assignEmployerID(employerID);
     newEmployeeWindow.show();
 
     //If the new employee was submitted...
@@ -199,7 +202,7 @@ void OpenEval::addEmployee()
         currentEmployeeID = returnLastID(&employeeDataFile, 0);
 
         //Update the Employee Name field to reflect the new employee.
-        updateEmployeeFields();
+        setFields();
     }
 }
 

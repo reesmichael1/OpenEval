@@ -20,14 +20,6 @@ public slots:
 
 private:
     int employerID;
-    QString name;
-    QString address;
-    QString city;
-    QString state;
-    QString zipCode;
-    QString phone;
-    QString eMail;
-    QString contact;
     QLineEdit *employerName;
     QLineEdit *employerAddress;
     QLineEdit *employerCity;

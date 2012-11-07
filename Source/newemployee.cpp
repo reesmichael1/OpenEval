@@ -113,6 +113,11 @@ void NewEmployee::assignEmployeeID()
     employeeID = returnMaxValue(employeeIDVector);
 }
 
+void NewEmployee::assignEmployerID(int *currentID)
+{
+    employerID = currentID;
+}
+
 void NewEmployee::writeEmployeeData()
 {
 
@@ -138,9 +143,10 @@ void NewEmployee::employEmployee()
     QString employerDataString = returnLineWithString(&employerDataFile, employer, 1);
     QStringList employerDataList = employerDataString.split("\",\"");
 
-    int employerID = employerDataList.at(0).toInt();
+    int currentEmployerID = employerDataList.at(0).toInt();
+    *employerID = currentEmployerID;
 
-    QString fieldPlacementsString = QString::number(employeeID) + "\",\"" + QString::number(employerID);
+    QString fieldPlacementsString = QString::number(employeeID) + "\",\"" + QString::number(currentEmployerID);
 
     QFile fieldPlacementsFile(FIELDPLACEMENTSFILE);
     addStringToFile(&fieldPlacementsFile, fieldPlacementsString);
