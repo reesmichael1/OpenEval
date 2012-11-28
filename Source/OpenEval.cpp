@@ -584,9 +584,13 @@ void OpenEval::removeEmployer()
         {
             employeeName->setText("");
             employerName->setText("");
+            currentEmployeeID = 0;
+            currentEmployerID = 0;
             disableEmployerFields();
             disableEmployeeFields();
         }
+
+        updateReviewFields();
 
         QFile fieldPlacementsFile(FIELDPLACEMENTSFILE);
         QFile evaluationResultsFile(EVALUATIONRESULTSFILE);

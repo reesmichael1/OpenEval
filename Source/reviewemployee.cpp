@@ -149,15 +149,22 @@ void ReviewEmployee::submit()
     removeEntity(&evaluationResultsFile, currentEmployeeID, 1);
 
     QString evaluationResultsString = QString::number(currentEvaluationID) + "\",\""
-                    + QString::number(currentEmployeeID) + "\",\"" + currentEmployerID + "\",\""
+                    + QString::number(currentEmployeeID) + "\",\""
+                    + QString::number(currentEmployerID) + "\",\""
                     + currentEvaluationDate->selectedDate().toString() + "\",\""
                     + nextEvaluationDate->selectedDate().toString() + "\",\""
-                    + qualityOfWorkScore->value() + "\",\"" + workQualityComments->text() + "\",\""
-                    + workHabitsScore->value() + "\",\"" + workHabitsComments->text() + "\",\""
-                    + jobKnowledgeScore->value() + "\",\"" + jobKnowledgeComments->text() + "\",\""
-                    + behaviorScore->value() + "\",\"" + behaviorComments->text() + "\",\""
-                    + averageScore->value() + "\",\"" + overallComments->text() + "\",\""
-                    + overallProgress->value() + "\",\"" + employmentRecommendation->currentText();
+                    + QString::number(qualityOfWorkScore->value())
+                    + "\",\"" + workQualityComments->text() + "\",\""
+                    + QString::number(workHabitsScore->value()) + "\",\""
+                    + workHabitsComments->text() + "\",\""
+                    + QString::number(jobKnowledgeScore->value()) + "\",\""
+                    + jobKnowledgeComments->text() + "\",\""
+                    + QString::number(behaviorScore->value())
+                    + "\",\"" + behaviorComments->text() + "\",\""
+                    + QString::number(averageScore->value()) + "\",\""
+                    + overallComments->text() + "\",\""
+                    + QString::number(overallProgress->value())
+                    + "\",\"" + employmentRecommendation->currentText();
 
     addStringToFile(&evaluationResultsFile, evaluationResultsString);
     clearFields();
