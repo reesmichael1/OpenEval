@@ -171,62 +171,7 @@ QVector<int> FileOperations::generateEmployeeIDVector(int currentEmployerID)
 
     return employeeIDVector;
 }
-/*
-QVector<int> FileOperations::generateEmployerIDVector()
-{/*
-    QVector<int> employerIDVector;
 
-    QFile employerDataFile(EMPLOYERFILE);
-    QTextStream employerData(&employerDataFile);
-
-    employerDataFile.open(QIODevice::Text | QIODevice::ReadOnly);
-
-    QString employerDataString = employerData.readLine();
-    QStringList employerDataList;
-
-    while (employerDataString != "")
-    {
-        employerDataList = employerDataString.split("\",\"");
-        employerIDVector.append(employerDataList.at(0).toInt());
-        employerDataString = employerData.readLine();
-    }
-
-    employerDataFile.close();
-
-    return employerIDVector;
-
-    QVector<int> employerIDVector = generateIDVector(&employerDataFile, 0);
-
-    return employerIDVector;
-
-}
-
-
-QVector<int> FileOperations::generateEmployeeIDVector()
-{
-    QVector<int> employeeIDVector;
-
-    QFile employeeDataFile(EMPLOYEEFILE);
-    QTextStream employeeData(&employeeDataFile);
-
-    employeeDataFile.open(QIODevice::Text | QIODevice::ReadOnly);
-
-    QString employeeDataString = employeeData.readLine();
-    QStringList employeeDataList;
-
-    while (employeeDataString != "")
-    {
-        employeeDataList = employeeDataString.split("\",\"");
-        employeeIDVector.append(employeeDataList.at(0).toInt());
-        employeeDataString = employeeData.readLine();
-    }
-
-    employeeDataFile.close();
-
-    return employeeIDVector;
-
-}
-*/
 QVector<int> FileOperations::generateIDVector(QFile *file, int IDPosition)
 {
     QVector<int> IDVector;
