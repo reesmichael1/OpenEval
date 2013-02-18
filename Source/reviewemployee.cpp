@@ -1,3 +1,5 @@
+//Operations that define the Review Employee window.
+
 #include <QtGui>
 #include "ReviewEmployee.h"
 

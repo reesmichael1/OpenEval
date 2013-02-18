@@ -1,3 +1,5 @@
+//Operations that define the base OpenEval window.
+
 #include <QtGui>
 #include "OpenEval.h"
 

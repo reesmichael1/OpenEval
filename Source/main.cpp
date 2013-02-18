@@ -1,5 +1,7 @@
 //OpenEval v. 1.0
 
+//Call the function to draw the main window.
+
 #include "OpenEval.h"
 
 int main(int argc, char *argv[])

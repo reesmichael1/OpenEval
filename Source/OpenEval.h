@@ -1,3 +1,6 @@
+//Declarations for the base window--the
+//window that is seen when OpenEval first runs.
+
 #ifndef OPENEVAL_H
 #define OPENEVAL_H
 

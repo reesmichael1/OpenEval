@@ -1,3 +1,5 @@
+//Declarations for the Review Employee window.
+
 #ifndef REVIEWEMPLOYEE_H
 #define REVIEWEMPLOYEE_H
 

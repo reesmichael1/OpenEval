@@ -1,3 +1,5 @@
+//Declarations for the Find Employer window.
+
 #ifndef FINDEMPLOYER_H
 #define FINDEMPLOYER_H
 

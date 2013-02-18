@@ -1,3 +1,5 @@
+//Operations that define the New Employer window.
+
 #include "NewEmployer.h"
 #include <QtGui>
 

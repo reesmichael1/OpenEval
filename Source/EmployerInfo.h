@@ -1,3 +1,5 @@
+//Declarations for the Employer Info window.
+
 #ifndef EMPLOYERINFO_H
 #define EMPLOYERINFO_H
 

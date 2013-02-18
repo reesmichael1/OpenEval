@@ -1,3 +1,5 @@
+//Operations that define the Find Employee window.
+
 #include <QtGui>
 #include "FindEmployee.h"
 

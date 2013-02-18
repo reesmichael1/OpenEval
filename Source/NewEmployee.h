@@ -1,3 +1,5 @@
+//Declarations for the New Employee window.
+
 #ifndef NEWEMPLOYEE_H
 #define NEWEMPLOYEE_H
 

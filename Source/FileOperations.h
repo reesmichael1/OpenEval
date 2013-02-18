@@ -1,3 +1,7 @@
+//This is the fundamental class of OpenEval.
+//FileOperations defines all of the methods for
+//interacting with the data files that OpenEval.
+
 #ifndef FILEOPERATIONS_H
 #define FILEOPERATIONS_H
 

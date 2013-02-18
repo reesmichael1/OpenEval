@@ -1,3 +1,6 @@
+//This defines all of the interactions with files that
+//are used by OpenEval.
+
 #include <QtGui>
 #include "FileOperations.h"
 

@@ -1,3 +1,5 @@
+//Operations that define the Employer Info window.
+
 #include "EmployerInfo.h"
 #include <QtGui>
 
