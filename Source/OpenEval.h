@@ -71,6 +71,8 @@ private:
     QAction *removeEmployeeAction;
     QAction *removeEmployerAction;
     QAction *reviewEmployeeAction;
+    QAction *findEmployeeAction;
+    QAction *findEmployerAction;
     QWidget *centralWidget;
     NewEmployee newEmployeeWindow;
     NewEmployer newEmployerWindow;

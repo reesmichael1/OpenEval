@@ -5,7 +5,7 @@
 OpenEval::OpenEval()
 {
 
-    //Draw main interface.
+    //Draw main window.
     QLabel *nameLabel = new QLabel(tr("Employee"));
     employeeName = new QLineEdit;
     employeeName->setReadOnly(true);
@@ -52,11 +52,9 @@ OpenEval::OpenEval()
     averageScore->setReadOnly(true);
     averageScore->setMaximumWidth(55);
 
-    //Create button to add a new employee.
     addEmployeeButton = new QPushButton(tr("Create New Employee"));
     connect(addEmployeeButton, SIGNAL(clicked()), this, SLOT(addEmployee()));
 
-    //Create button to add a new employer.
     addEmployerButton = new QPushButton(tr("Create New Employer"));
     connect(addEmployerButton, SIGNAL(clicked()), this, SLOT(addEmployer()));
 
@@ -99,7 +97,6 @@ OpenEval::OpenEval()
     reviewButton = new QPushButton(tr("Review"));
     connect(reviewButton, SIGNAL(clicked()), this, SLOT(reviewEmployee()));
 
-    //Draw scores.
     QHBoxLayout *workQualityLayout = new QHBoxLayout;
     workQualityLayout->addWidget(workQualityLabel);
     workQualityLayout->addWidget(qualityOfWorkScore);
@@ -127,7 +124,6 @@ OpenEval::OpenEval()
     scoresLayout->addLayout(behaviorLayout);
     scoresLayout->addLayout(averageLayout);
 
-    //Draw name layouts.
     QHBoxLayout *employeeNameLayout = new QHBoxLayout;
     employeeNameLayout->addWidget(nameLabel);
     employeeNameLayout->addWidget(employeeName);
@@ -159,13 +155,13 @@ OpenEval::OpenEval()
     createButtonLayout->addWidget(findEmployeeButton, 0, 1);
     createButtonLayout->addWidget(findEmployerButton, 1, 1);
 
-    //Draw main layout.
     QGridLayout *mainLayout = new QGridLayout;
     mainLayout->addLayout(scoresLayout, 0, 0, 5, 2);
     mainLayout->addLayout(infoLayout, 0, 2, 5, 2);
     mainLayout->addLayout(editButtonLayout, 0, 4, 5, 2);
     mainLayout->addLayout(createButtonLayout, 5, 0, 1, 6);
 
+    //Assign keyboard shortcuts and add entries to the menu bars.
     createActions();
     createMenus();
 
@@ -174,7 +170,6 @@ OpenEval::OpenEval()
 
     setCentralWidget(centralWidget);
 
-    //setLayout(mainLayout);
     setWindowTitle(tr("OpenEval"));
 
     //Set the Employer Name field to the first employer in EMPLOYERS.txt,
@@ -359,12 +354,7 @@ void OpenEval::nextEmployerID()
         i++;
         nextEmployerID = employerIDVector.at(i);
     }
-/*
-    if (currentEmployerID != nextEmployerID)
-    {
-        setEmployeeIDForEmployer();
-    }
-*/
+
     currentEmployerID = nextEmployerID;
 
 }
@@ -405,12 +395,7 @@ void OpenEval::previousEmployerID()
             }
         }
     }
-/*
-    if (currentEmployerID != previousEmployerID)
-    {
-        setEmployeeIDForEmployer();
-    }
-*/
+
     currentEmployerID = previousEmployerID;
 
 }
@@ -444,12 +429,16 @@ void OpenEval::reviewEmployee()
 //Display the window to view the employee's information (address, phone, etc.).
 void OpenEval::showEmployeeInfo()
 {
+
+    //Prepare and display the window for displaying an employee's information.
     employeeInfoWindow.setIDValues(currentEmployeeID, currentEmployerID);
     employeeInfoWindow.setFields();
     employeeInfoWindow.show();
 
+    //When the window is closed...
     if (employeeInfoWindow.exec() == QDialog::Accepted)
     {
+        //...update the fields in case edits were made.
         setFields();
     }
 }
@@ -457,10 +446,17 @@ void OpenEval::showEmployeeInfo()
 //Display the window to view the employer's information (address, phone, etc.).
 void OpenEval::showEmployerInfo()
 {
-    //Prepare the window by setting the necessary values.
+    //Prepare and display the window for displaying an employer's information.
     employerInfoWindow.setEmployerID(currentEmployerID);
     employerInfoWindow.setFields();
     employerInfoWindow.show();
+
+    //When the window is closed...
+    if (employerInfoWindow.exec() == QDialog::Accepted)
+    {
+        //update the fields in case edits were made.
+        setFields();
+    }
 }
 
 //Open the Employee Info window in editing mode.
@@ -475,8 +471,10 @@ void OpenEval::editEmployee()
     employeeInfoWindow.updateMode(EmployeeInfo::EditingMode);
     employeeInfoWindow.show();
 
+    //When the window is closed...
     if (employeeInfoWindow.exec() == QDialog::Accepted)
     {
+        //...update the fields to reflect the edits.
         setFields();
     }
 }
@@ -492,33 +490,43 @@ void OpenEval::editEmployer()
     employerInfoWindow.setMode(EmployerInfo::EditingMode);
     employerInfoWindow.show();
 
+    //When the window is closed...
     if (employerInfoWindow.exec() == QDialog::Accepted)
     {
+        //...update the fields to reflect the edits.
         setFields();
     }
 }
 
-//
+//Set the current employee to match a name provided by the user.
 void OpenEval::findEmployee()
 {
+    //Prepare and display the Find Employee window.
     int* employeeID = &currentEmployeeID;
     findEmployeeWindow.setEmployeeID(employeeID, currentEmployerID);
     findEmployeeWindow.show();
 
+    //If a valid employee is submitted...
     if (findEmployeeWindow.exec() == QDialog::Accepted)
     {
+        //then update the fields to represent the new employee name.
         setFields();
     }
 }
 
+//Set the current employer to match a name provided by the user.
 void OpenEval::findEmployer()
 {
+    //Prepare and display the Find Employer window.
     int* employerID = &currentEmployerID;
     findEmployerWindow.setEmployerID(employerID);
     findEmployerWindow.show();
 
+    //If a valid employer is submitted...
     if (findEmployerWindow.exec() == QDialog::Accepted)
     {
+        //then update the fields to represent the new employer name
+        //and
         setEmployeeIDForEmployer();
         setFields();
     }
@@ -781,6 +789,8 @@ void OpenEval::enableEmployeeFields()
     nextEmployeeButton->setEnabled(true);
     employeeInfoButton->setEnabled(true);
     editEmployeeAction->setEnabled(true);
+    reviewEmployeeAction->setEnabled(true);
+    removeEmployeeAction->setEnabled(true);
 }
 
 void OpenEval::disableEmployeeFields()
@@ -794,6 +804,8 @@ void OpenEval::disableEmployeeFields()
     employeeInfoButton->setEnabled(false);
     newEmployeeAction->setEnabled(false);
     editEmployeeAction->setEnabled(false);
+    reviewEmployeeAction->setEnabled(false);
+    removeEmployeeAction->setEnabled(false);
 }
 
 void OpenEval::enableEmployerFields()
@@ -807,6 +819,7 @@ void OpenEval::enableEmployerFields()
     employerInfoButton->setEnabled(true);
     newEmployeeAction->setEnabled(true);
     editEmployerAction->setEnabled(true);
+    removeEmployerAction->setEnabled(true);
 }
 
 void OpenEval::disableEmployerFields()
@@ -819,6 +832,7 @@ void OpenEval::disableEmployerFields()
     nextEmployerButton->setEnabled(false);
     employerInfoButton->setEnabled(false);
     editEmployerAction->setEnabled(false);
+    removeEmployerAction->setEnabled(false);
 }
 
 //Set the fields in the main window to reflect the new data in the files.
@@ -853,8 +867,6 @@ void OpenEval::createActions()
 
     newEmployerAction = new QAction(tr("New Employer"), this);
     newEmployerAction->setStatusTip(tr("Create a new employer."));
-    //QKeySequence newEmployerShortcut(Qt::Key_Control + Qt::Key_Shift + Qt::Key_N);
-    newEmployerAction->setShortcut(Qt::Key_Control + Qt::Key_Shift + Qt::Key_N);
     connect(newEmployerAction, SIGNAL(triggered()), this, SLOT(addEmployer()));
 
     editEmployeeAction = new QAction(tr("Edit Employee"), this);

@@ -22,7 +22,7 @@ QString FileOperations::returnDataString(QFile *file, int currentID, int IDPosit
             employeeDataList = dataString.split("\",\"");
         }
 
-        file->close();
+    file->close();
 
     }
 

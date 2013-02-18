@@ -89,6 +89,7 @@ ReviewEmployee::ReviewEmployee(QWidget *parent)
 
     submitButton = new QPushButton(tr("Submit"));
     connect(submitButton, SIGNAL(clicked()), this, SLOT(accept()));
+
     connect(submitButton, SIGNAL(clicked()), this, SLOT(submit()));
 
     QGridLayout *evaluationLayout = new QGridLayout;
@@ -134,8 +135,6 @@ ReviewEmployee::ReviewEmployee(QWidget *parent)
     mainLayout->addLayout(evaluationLayout, 0, 0, 1, 2);
     mainLayout->addLayout(calendarLayout, 3, 1);
     mainLayout->addLayout(buttonLayout, 4, 1, 1, 2);
-
-    //setEmployeeName();
 
     setLayout(mainLayout);
     setWindowTitle(tr("Review Employee"));
@@ -191,6 +190,7 @@ void ReviewEmployee::clearFields()
     workHabitsComments->setText("");
     jobKnowledgeComments->setText("");
     behaviorComments->setText("");
+    overallComments->setText("");
 
     qualityOfWorkScore->setValue(1);
     workHabitsScore->setValue(1);
@@ -217,43 +217,24 @@ void ReviewEmployee::setEmployeeName()
 {
 
     QFile employeeDataFile(EMPLOYEEFILE);
-    QTextStream employeeData(&employeeDataFile);
 
-    employeeDataFile.open(QIODevice::Text | QIODevice::ReadOnly);
-    QString employeeDataString = employeeData.readLine();
-    QString employeeNameString;
-    QStringList employeeDataList;
-
-    do
-    {
-        employeeDataList = employeeDataString.split("\",\"");
-        employeeNameString = employeeDataList.at(1) + " " + employeeDataList.at(2);
-        employeeDataString = employeeData.readLine();
-    } while (currentEmployeeID != employeeDataList.at(0).toInt());
+    QString employeeDataString = returnDataString(&employeeDataFile, currentEmployeeID, 0);
+    QStringList employeeDataList = employeeDataString.split("\",\"");
+    QString employeeNameString = employeeDataList.at(1) + " " + employeeDataList.at(2);
 
     employeeName->setText(employeeNameString);
-    employeeDataFile.close();
 }
 
 void ReviewEmployee::setEmployerName()
 {
     QFile employerDataFile(EMPLOYERFILE);
-    QTextStream employerData(&employerDataFile);
 
-    employerDataFile.open(QIODevice::Text | QIODevice::ReadOnly);
-    QString employerDataString = employerData.readLine();
-    QString employerNameString;
-    QStringList employerDataList;
-
-    do
-    {
-        employerDataList = employerDataString.split("\",\"");
-        employerNameString = employerDataList.at(1);
-        employerDataString = employerData.readLine();
-    } while (currentEmployerID != employerDataList.at(0).toInt());
+    QString employerDataString = returnDataString(&employerDataFile, currentEmployerID, 0);
+    QStringList employerDataList = employerDataString.split("\",\"");
+    QString employerNameString = employerDataList.at(1);
 
     employerName->setText(employerNameString);
-    employerDataFile.close();
+
 }
 
 void ReviewEmployee::setAverageScore()

@@ -191,9 +191,6 @@ void EmployeeInfo::setFields()
     employeeEmployer->setText(employerDataList.at(1));
 
     QFile evaluationResultsFile(EVALUATIONRESULTSFILE);
-    //QTextStream evaluationResults(&evaluationResultsFile);
-
-    evaluationResultsFile.open(QIODevice::Text | QIODevice::ReadOnly);
 
     QString evaluationResultsString = returnDataString(&evaluationResultsFile, currentEmployeeID, 1);
 
@@ -217,37 +214,6 @@ void EmployeeInfo::setFields()
         overallProgressScore->setValue(evaluationResultsList.at(15).toInt());
         employmentRecommendation->setText(evaluationResultsList.at(16));
     }
-
-    /*
-    while (evaluationResultsString != "")
-    {
-        if (evaluationResultsList.at(1).toInt() == currentEmployeeID)
-        {
-
-            previousEvaluationDate->setSelectedDate(QDate::fromString(evaluationResultsList.at(3)));
-            nextEvaluationDate->setSelectedDate(QDate::fromString(evaluationResultsList.at(4)));
-            qualityOfWorkScore->setValue(evaluationResultsList.at(5).toInt());
-            workQualityComments->setText(evaluationResultsList.at(6));
-            workHabitsScore->setValue(evaluationResultsList.at(7).toInt());
-            workHabitsComments->setText(evaluationResultsList.at(8));
-            jobKnowledgeScore->setValue(evaluationResultsList.at(9).toInt());
-            jobKnowledgeComments->setText(evaluationResultsList.at(10));
-            behaviorScore->setValue(evaluationResultsList.at(11).toInt());
-            behaviorComments->setText(evaluationResultsList.at(12));
-            averageScore->setValue(evaluationResultsList.at(13).toDouble());
-            overallComments->setText(evaluationResultsList.at(14));
-            overallProgressScore->setValue(evaluationResultsList.at(15).toInt());
-            employmentRecommendation->setText(evaluationResultsList.at(16));
-        }
-        evaluationResultsString = evaluationResults.readLine();
-        evaluationResultsList = evaluationResultsString.split("\",\"");
-    }
-
-    evaluationResultsFile.close();
-
-*/
-
-
 
 }
 
