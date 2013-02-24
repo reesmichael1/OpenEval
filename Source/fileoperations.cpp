@@ -4,6 +4,8 @@
 #include <QtGui>
 #include "FileOperations.h"
 
+//This returns a string within a certain file that has a certain value
+//at a certain position. All of these parameters are passed to the function.
 QString FileOperations::returnDataString(QFile *file, int currentID, int IDPosition)
 {
 
@@ -37,18 +39,9 @@ QString FileOperations::returnDataString(QFile *file, int currentID, int IDPosit
     return dataString;
 }
 
-QString FileOperations::returnFirstString(QFile *file)
-{
-    QTextStream dataStream(file);
-
-    file->open(QIODevice::Text | QIODevice::ReadOnly);
-    QString dataString = dataStream.readLine();
-    file->close();
-
-    return dataString;
-
-}
-
+//Like returnDataString(), this function returns a string from a certain file.
+//However, this string is specified by the position of another string within the
+//line in the file.
 QString FileOperations::returnLineWithString(QFile *file, QString string, int stringPosition)
 {
     file->open(QIODevice::Text | QIODevice::ReadOnly);
@@ -68,7 +61,22 @@ QString FileOperations::returnLineWithString(QFile *file, QString string, int st
     return dataString;
 }
 
+//This returns the first string within a certain file,
+//a pointer to which is passed whenever this function
+//is called.
+QString FileOperations::returnFirstString(QFile *file)
+{
+    QTextStream dataStream(file);
 
+    file->open(QIODevice::Text | QIODevice::ReadOnly);
+    QString dataString = dataStream.readLine();
+    file->close();
+
+    return dataString;
+
+}
+
+//This returns the last ID that is contained within a certain file.
 int FileOperations::returnLastID(QFile *file, int IDPosition)
 {
 
@@ -92,6 +100,8 @@ int FileOperations::returnLastID(QFile *file, int IDPosition)
     return lastID;
 }
 
+//This adds a string to the end of a certain file. Both of these
+//parameters are passed whenever the function is called.
 void FileOperations::addStringToFile(QFile *file, QString string)
 {
     QTextStream dataStream(file);
@@ -103,6 +113,8 @@ void FileOperations::addStringToFile(QFile *file, QString string)
     file->close();
 }
 
+//This removes a line from a certain file that contains a certain ID at a
+//certain position within the line.
 void FileOperations::removeEntity(QFile *file, int currentID, int IDPosition)
 {
 
@@ -116,6 +128,12 @@ void FileOperations::removeEntity(QFile *file, int currentID, int IDPosition)
     QString dataString = originalStream.readLine();
     QStringList dataList = dataString.split("\",\"");
 
+    //If the file starts with an empty line (because the last line of the file
+    //was removed and left behind an empty line), then remove it.
+    //Otherwise, OpenEval only reads to the null line (the start line) and does
+    //not see the data in the rest of the file. This can be done because this
+    //extra line is only added when the last line is removed and the file
+    //becomes empty.
     if (dataString != "")
     {
         do
@@ -130,14 +148,6 @@ void FileOperations::removeEntity(QFile *file, int currentID, int IDPosition)
         } while (dataString != "");
     }
 
-    //If the file starts with an empty line (because the last line of the file
-    //was removed and left behind an empty line), then remove it.
-    //Otherwise, OpenEval only reads to the null line (the start line) and does
-    //not see the data in the rest of the file. This can be done because this
-    //extra line is only added when the last line is removed and the file
-    //becomes empty.
-
-
     fileBackup.close();
     file->close();
 
@@ -146,9 +156,12 @@ void FileOperations::removeEntity(QFile *file, int currentID, int IDPosition)
     file->remove();
     fileBackup.rename(fileName);
 
-    fileBackup.open(QIODevice::Text | QIODevice::ReadOnly);
+    //TEST FOR REGRESSIONS:
+    //fileBackup.open(QIODevice::Text | QIODevice::ReadOnly);
 }
 
+//This returns a vector that contains all of the IDs of the employees of
+//a specified employer (the ID of which is passed to the function).
 QVector<int> FileOperations::generateEmployeeIDVector(int currentEmployerID)
 {
     QVector<int> employeeIDVector;
@@ -175,6 +188,8 @@ QVector<int> FileOperations::generateEmployeeIDVector(int currentEmployerID)
     return employeeIDVector;
 }
 
+//This returns a vector that contains all of the IDs at a certain position
+//within a certain file.
 QVector<int> FileOperations::generateIDVector(QFile *file, int IDPosition)
 {
     QVector<int> IDVector;
@@ -198,7 +213,9 @@ QVector<int> FileOperations::generateIDVector(QFile *file, int IDPosition)
     return IDVector;
 }
 
-int FileOperations::returnMaxValue(QVector<int> IDVector)
+//This returns one higher than the maximum value
+//of a vector that is passed to it.
+int FileOperations::returnOneHigherThanMaxValue(QVector<int> IDVector)
 {
     int maxID;
 

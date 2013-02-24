@@ -3,6 +3,7 @@
 #include "EmployerInfo.h"
 #include <QtGui>
 
+//Draw main window for Employer Info.
 EmployerInfo::EmployerInfo(QWidget *parent)
     : QDialog(parent)
 {
@@ -82,11 +83,15 @@ EmployerInfo::EmployerInfo(QWidget *parent)
     setWindowTitle(tr("Employer Info"));
 }
 
+//The main OpenEval window passes the current employer ID
+//to Employer Info through this function.
 void EmployerInfo::setEmployerID(int employerID)
 {
     currentEmployerID = employerID;
 }
 
+//This function reads the employer info from the data file
+//and then sets the fields in the window accordingly.
 void EmployerInfo::setFields()
 {
     QFile employerDataFile(EMPLOYERFILE);
@@ -103,11 +108,42 @@ void EmployerInfo::setFields()
     employerContact->setText(employerDataList.at(8));
 }
 
+//This updates all of the fields so that they are no
+//longer read only.
 void EmployerInfo::editEmployer()
 {
     setMode(EditingMode);
 }
 
+//This removes the current employer from the employer
+//data file and writes the new information to the file.
+void EmployerInfo::submitEdits()
+{
+    QFile employerDataFile(EMPLOYERFILE);
+    removeEntity(&employerDataFile, currentEmployerID, 0);
+
+    QString employerDataString = QString::number(currentEmployerID) + "\",\""
+                        + employerName->text() + "\",\"" + employerAddress->text()
+                        + "\",\"" + employerCity->text() + "\",\"" + employerState->text()
+                        + "\",\"" + employerZipCode->text() + "\",\"" + employerPhone->text()
+                        + "\",\"" + employerEMail->text() + "\",\"" + employerContact->text();
+
+    addStringToFile(&employerDataFile, employerDataString);
+
+    setMode(ViewingMode);
+}
+
+//This resets the information to the way it was
+//before any edits were made.
+void EmployerInfo::cancelEdits()
+{
+    setMode(ViewingMode);
+    setFields();
+}
+
+//This function takes a flag and updates the fields that contain
+//the information of the employer. If the flag is for editing mode,
+//the fields are set to be editable. Otherwise, they become read only.
 void EmployerInfo::setMode(Mode currentMode)
 {
     if (currentMode == EditingMode)
@@ -141,26 +177,4 @@ void EmployerInfo::setMode(Mode currentMode)
         editButton->setVisible(true);
         okButton->setVisible(true);
     }
-}
-
-void EmployerInfo::submitEdits()
-{
-    QFile employerDataFile(EMPLOYERFILE);
-    removeEntity(&employerDataFile, currentEmployerID, 0);
-
-    QString employerDataString = QString::number(currentEmployerID) + "\",\""
-                        + employerName->text() + "\",\"" + employerAddress->text()
-                        + "\",\"" + employerCity->text() + "\",\"" + employerState->text()
-                        + "\",\"" + employerZipCode->text() + "\",\"" + employerPhone->text()
-                        + "\",\"" + employerEMail->text() + "\",\"" + employerContact->text();
-
-    addStringToFile(&employerDataFile, employerDataString);
-
-    setMode(ViewingMode);
-}
-
-void EmployerInfo::cancelEdits()
-{
-    setMode(ViewingMode);
-    setFields();
 }

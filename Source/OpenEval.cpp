@@ -3,7 +3,7 @@
 #include <QtGui>
 #include "OpenEval.h"
 
-//Constructor for main window. This draws the main window and calls functions to construct other windows.
+//This draws the main window and calls functions to construct other windows.
 OpenEval::OpenEval()
 {
 
@@ -163,7 +163,6 @@ OpenEval::OpenEval()
     mainLayout->addLayout(editButtonLayout, 0, 4, 5, 2);
     mainLayout->addLayout(createButtonLayout, 5, 0, 1, 6);
 
-    //Assign keyboard shortcuts and add entries to the menu bars.
     createActions();
     createMenus();
 
@@ -181,42 +180,37 @@ OpenEval::OpenEval()
     setFields();
 }
 
-//Add a new employee.
+//Add a new employee. If the employee is added successfully, then
+//update the Employee Name and Employer Name field to reflect the new addition.
 void OpenEval::addEmployee()
 {
-    //Show dialog box to add a new employee.
+
     int *employerID = &currentEmployerID;
 
     newEmployeeWindow.assignEmployerID(employerID);
     newEmployeeWindow.show();
 
-    //If the new employee was submitted...
     if (newEmployeeWindow.exec() == QDialog::Accepted)
     {
-        //...then update the Employee Name field to represent the new employee.
-
         QFile employeeDataFile(EMPLOYEEFILE);
         currentEmployeeID = returnLastID(&employeeDataFile, 0);
 
-        //Update the Employee Name field to reflect the new employee.
         setFields();
     }
 }
 
-//Add a new employer.
+//Add a new employer. If the employer is added successfully, then
+//update the Employer Name field to the new employer.
 void OpenEval::addEmployer()
 {
-    //Show the dialog box to add a new employer.
     newEmployerWindow.show();
 
-    //If the new employer is submitted...
     if (newEmployerWindow.exec() == QDialog::Accepted)
     {
 
         QFile employerDataFile(EMPLOYERFILE);
         currentEmployerID = returnLastID(&employerDataFile, 0);
 
-        //Update the Employer Name field to reflect the new employer.
         setEmployeeIDForEmployer();
         updateEmployeeFields();
         updateEmployerName();
@@ -230,11 +224,8 @@ void OpenEval::addEmployer()
 //by the currently displayed employer.
 void OpenEval::nextEmployeeID()
 {
-    //Create vector containing all of the current employer's employee's IDs.
-    QVector<int> employeeIDVector = generateEmployeeIDVector(currentEmployerID);
 
-    //Set currentEmployeeID to the employee ID after the current employee's ID
-    //in the vector of employee IDs.
+    QVector<int> employeeIDVector = generateEmployeeIDVector(currentEmployerID);
 
     int i = 0;
     int nextEmployeeID;
@@ -268,10 +259,8 @@ void OpenEval::nextEmployeeID()
 void OpenEval::previousEmployeeID()
 {
 
-    //Generate vector containing all of the current employer's employee's IDs.
     QVector<int> employeeIDVector = generateEmployeeIDVector(currentEmployerID);
 
-    //Set currentEmployeeID to match the previous employee ID in the vector.
     int i = 0;
     int previousEmployeeID;
 
@@ -324,8 +313,8 @@ void OpenEval::setPreviousEmployee()
     updateEmployeeFields();
 }
 
-//Set the employer ID to the next employer in EMPLOYERS.txt.
-//If at the end of the file, display the first employer.
+//Set the employer ID to the next employer.
+//If at the end of the file, set this to the first employer.
 void OpenEval::nextEmployerID()
 {
 
@@ -361,16 +350,14 @@ void OpenEval::nextEmployerID()
 
 }
 
-//Set the employer ID to the previous employer in EMPLOYERS.txt.
-//If at the beginning of the file, display the last employer.
+//Set the employer ID to the previous employer.
+//If at the beginning of the file, set this to the last employer.
 void OpenEval::previousEmployerID()
 {
 
-    //Generate vector of all of the employer IDs.
     QFile employerDataFile(EMPLOYERFILE);
     QVector<int> employerIDVector = generateIDVector(&employerDataFile, 0);
 
-    //Set currentEmployerID to match the previous ID in the vector.
     int i = 0;
     int previousEmployerID;
 
@@ -402,7 +389,7 @@ void OpenEval::previousEmployerID()
 
 }
 
-//Set the employer ID to the previous employer in EMPLOYERS.txt.
+//Set the employer ID to the previous employer.
 //Set the employee ID to this employer's first employee. Set the name fields.
 void OpenEval::setPreviousEmployer()
 {
@@ -415,48 +402,43 @@ void OpenEval::setPreviousEmployer()
 void OpenEval::reviewEmployee()
 {
 
-    //Prepare and display the window for reviewing an employee.
     reviewEmployeeWindow.setIDValues(currentEmployeeID, currentEmployerID);
     reviewEmployeeWindow.setFields();
     reviewEmployeeWindow.show();
-
-    //If the employee is successfully reviewed...
+.
     if (reviewEmployeeWindow.exec() == QDialog::Accepted)
     {
-        //...then update the review fields in the main window to contain the new information.
         updateReviewFields();
     }
 }
 
-//Display the window to view the employee's information (address, phone, etc.).
+//Display the window to view the employee's information.
 void OpenEval::showEmployeeInfo()
 {
 
-    //Prepare and display the window for displaying an employee's information.
     employeeInfoWindow.setIDValues(currentEmployeeID, currentEmployerID);
     employeeInfoWindow.setFields();
     employeeInfoWindow.show();
 
-    //When the window is closed...
+    //Since edits can be made from the Employee Info window, it's important
+    //to reset the fields in case any changes were made.
     if (employeeInfoWindow.exec() == QDialog::Accepted)
     {
-        //...update the fields in case edits were made.
         setFields();
     }
 }
 
-//Display the window to view the employer's information (address, phone, etc.).
+//Display the window to view the employer's information.
 void OpenEval::showEmployerInfo()
 {
-    //Prepare and display the window for displaying an employer's information.
     employerInfoWindow.setEmployerID(currentEmployerID);
     employerInfoWindow.setFields();
     employerInfoWindow.show();
 
-    //When the window is closed...
+    //Since edits can be made from the Employee Info window, it's important
+    //to reset the fields in case any changes were made.
     if (employerInfoWindow.exec() == QDialog::Accepted)
     {
-        //update the fields in case edits were made.
         setFields();
     }
 }
@@ -465,18 +447,14 @@ void OpenEval::showEmployerInfo()
 void OpenEval::editEmployee()
 {
 
-    //Prepare the window by setting the necessary values.
     employeeInfoWindow.setIDValues(currentEmployeeID, currentEmployerID);
     employeeInfoWindow.setFields();
 
-    //Set the mode to editing mode so that the fields can be changed.
     employeeInfoWindow.updateMode(EmployeeInfo::EditingMode);
     employeeInfoWindow.show();
 
-    //When the window is closed...
     if (employeeInfoWindow.exec() == QDialog::Accepted)
     {
-        //...update the fields to reflect the edits.
         setFields();
     }
 }
@@ -484,18 +462,14 @@ void OpenEval::editEmployee()
 //Open the Employer Info window in editing mode.
 void OpenEval::editEmployer()
 {
-    //Prepare the window by setting the necessary values.
     employerInfoWindow.setEmployerID(currentEmployerID);
     employerInfoWindow.setFields();
 
-    //Set the mode to editing mode so that the fields can be changed.
     employerInfoWindow.setMode(EmployerInfo::EditingMode);
     employerInfoWindow.show();
 
-    //When the window is closed...
     if (employerInfoWindow.exec() == QDialog::Accepted)
     {
-        //...update the fields to reflect the edits.
         setFields();
     }
 }
@@ -503,15 +477,12 @@ void OpenEval::editEmployer()
 //Set the current employee to match a name provided by the user.
 void OpenEval::findEmployee()
 {
-    //Prepare and display the Find Employee window.
     int* employeeID = &currentEmployeeID;
-    findEmployeeWindow.setEmployeeID(employeeID, currentEmployerID);
+    findEmployeeWindow.setIDValues(employeeID, currentEmployerID);
     findEmployeeWindow.show();
 
-    //If a valid employee is submitted...
     if (findEmployeeWindow.exec() == QDialog::Accepted)
     {
-        //then update the fields to represent the new employee name.
         setFields();
     }
 }
@@ -519,21 +490,18 @@ void OpenEval::findEmployee()
 //Set the current employer to match a name provided by the user.
 void OpenEval::findEmployer()
 {
-    //Prepare and display the Find Employer window.
     int* employerID = &currentEmployerID;
     findEmployerWindow.setEmployerID(employerID);
     findEmployerWindow.show();
 
-    //If a valid employer is submitted...
     if (findEmployerWindow.exec() == QDialog::Accepted)
     {
-        //then update the fields to represent the new employer name
-        //and
         setEmployeeIDForEmployer();
         setFields();
     }
 }
 
+//Remove the current employee from the employee data file.
 void OpenEval::removeEmployee()
 {
 
@@ -570,6 +538,7 @@ void OpenEval::removeEmployee()
 
 }
 
+//Remove the current employer from the employer data file.
 void OpenEval::removeEmployer()
 {
 
@@ -678,6 +647,8 @@ void OpenEval::updateEmployeeFields()
     updateReviewFields();
 }
 
+//Set the review spin boxes within the base OpenEval window to reflect the
+//evaluation scores of the current employee.
 void OpenEval::updateReviewFields()
 {
     QFile evaluationResultsFile(EVALUATIONRESULTSFILE);
@@ -757,8 +728,6 @@ void OpenEval::setEmployeeIDForEmployer()
 
     if (!employeeIDVector.isEmpty())
     {
-        //Open the field placements file. Find the first employee employed by this employer.
-        //Set this employee ID to be the current.
         QFile fieldPlacementsFile(FIELDPLACEMENTSFILE);
         QString fieldPlacementsString = returnDataString(&fieldPlacementsFile, currentEmployerID, 1);
         QStringList fieldPlacementsList = fieldPlacementsString.split("\",\"");
@@ -844,6 +813,7 @@ void OpenEval::setFields()
     updateEmployerName();
 }
 
+//Create the menu bars to be added to the user interface.
 void OpenEval::createMenus()
 {
     fileMenu = menuBar()->addMenu(tr("&File"));
@@ -860,6 +830,7 @@ void OpenEval::createMenus()
     toolsMenu->addAction(reviewEmployeeAction);
 }
 
+//Create the actions that go within the menu bars.
 void OpenEval::createActions()
 {
     newEmployeeAction = new QAction(tr("New Employee"), this);

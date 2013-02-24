@@ -17,15 +17,15 @@ public:
     enum Mode {AddingMode, ViewingMode};
     NewEmployee(QWidget *parent = 0);
     void addEmployers();
-    void assignEmployerID(int* currentID);
+    void assignEmployerID(int* employerID);
 
 public slots:
     void cancel();
     void submit();
 
 private:
-    int employeeID;
-    int *employerID;
+    int currentEmployeeID;
+    int *currentEmployerID;
     QLineEdit *employeeFirstName;
     QLineEdit *employeeLastName;
     QLineEdit *employeeAddress;

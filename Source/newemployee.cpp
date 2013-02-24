@@ -3,6 +3,7 @@
 #include "NewEmployee.h"
 #include <QtGui>
 
+//Draw the New Employee window.
 NewEmployee::NewEmployee(QWidget *parent)
     : QDialog(parent)
 {
@@ -78,12 +79,16 @@ NewEmployee::NewEmployee(QWidget *parent)
     addEmployers();
 }
 
+//This resets the New Employee window to its base state
+//and hides it.
 void NewEmployee::cancel()
 {
     hide();
     clearFields();
 }
 
+//This writes the new employee to the employee data file
+//and resets the window to its base state.
 void NewEmployee::submit()
 {
     assignEmployeeID();
@@ -91,6 +96,8 @@ void NewEmployee::submit()
     clearFields();
 }
 
+//This adds newly created employers to the "Select Employer"
+//menu within the New Employee window.
 void NewEmployee::addEmployers()
 {
 
@@ -108,25 +115,31 @@ void NewEmployee::addEmployers()
 
 }
 
+//This sets the employee ID that will be assigned to the
+//new employee as one higher the current greatest ID within
+//the employee data file.
 void NewEmployee::assignEmployeeID()
 {
     QFile employeeDataFile(EMPLOYEEFILE);
     QVector<int> employeeIDVector = generateIDVector(&employeeDataFile, 0);
-    employeeID = returnMaxValue(employeeIDVector);
+    currentEmployeeID = returnOneHigherThanMaxValue(employeeIDVector);
 }
 
-void NewEmployee::assignEmployerID(int *currentID)
+//This takes a pointer to the current employer ID within OpenEval
+//so that the fields can be updated when the new employee is submitted.
+void NewEmployee::assignEmployerID(int *employerID)
 {
-    employerID = currentID;
+    currentEmployerID = employerID;
 }
 
+//This writes the information about the employee into the employee data file.
 void NewEmployee::writeEmployeeData()
 {
 
 
     QFile employeeDataFile(EMPLOYEEFILE);
 
-    QString employeeDataString =  QString::number(employeeID) + "\",\"" + employeeFirstName->text() + "\",\""
+    QString employeeDataString =  QString::number(currentEmployeeID) + "\",\"" + employeeFirstName->text() + "\",\""
                             + employeeLastName->text() + "\",\"" + employeeEMail->text() + "\",\""
                             + employeePhone->text() + "\",\"" + employeeCell->text() + "\",\""
                             + employeeAddress->text() + "\",\"" + employeeCity->text() + "\",\""
@@ -137,6 +150,8 @@ void NewEmployee::writeEmployeeData()
     employEmployee();
 }
 
+//This writes the employee ID and the employer ID to
+//the field placements data file.
 void NewEmployee::employEmployee()
 {
     QString employer = employeeEmployer->currentText();
@@ -146,15 +161,17 @@ void NewEmployee::employEmployee()
     QStringList employerDataList = employerDataString.split("\",\"");
 
     int currentEmployerID = employerDataList.at(0).toInt();
-    *employerID = currentEmployerID;
+    *currentEmployerID = currentEmployerID;
 
-    QString fieldPlacementsString = QString::number(employeeID) + "\",\"" + QString::number(currentEmployerID);
+    QString fieldPlacementsString = QString::number(currentEmployeeID) + "\",\"" + QString::number(currentEmployerID);
 
     QFile fieldPlacementsFile(FIELDPLACEMENTSFILE);
     addStringToFile(&fieldPlacementsFile, fieldPlacementsString);
 
 }
 
+//This resets all of the editable fields within the
+//New Employee window.
 void NewEmployee::clearFields()
 {
     employeeFirstName->setText("");

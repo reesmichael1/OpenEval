@@ -16,7 +16,7 @@ class FindEmployee : public QDialog, private FileOperations
 
 public:
     FindEmployee(QDialog *parent = 0);
-    void setEmployeeID(int *employeeID, int employerID);
+    void setIDValues(int *employeeID, int employerID);
 
 public slots:
     void findEmployee();

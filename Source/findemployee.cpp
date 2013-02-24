@@ -3,6 +3,7 @@
 #include <QtGui>
 #include "FindEmployee.h"
 
+//Draw the Find Employee window.
 FindEmployee::FindEmployee(QDialog * parent)
     : QDialog(parent)
 {
@@ -29,6 +30,18 @@ FindEmployee::FindEmployee(QDialog * parent)
     setWindowTitle(tr("Find Employee"));
 }
 
+//This function takes a pointer to the employee ID to be changed
+//and the value of the employer ID.
+void FindEmployee::setIDValues(int *employeeID, int employerID)
+{
+    currentEmployeeID = employeeID;
+    currentEmployerID = employerID;
+}
+
+//This searches the employee data file for an employee with
+//a certain name. If the employee cannot be found, the function
+//provides a notification that says so. Otherwise, the pointer
+//to the employee ID within the main OpenEval window is updated.
 void FindEmployee::findEmployee()
 {
     bool employeeFound = false;
@@ -58,13 +71,8 @@ void FindEmployee::findEmployee()
 
 }
 
+//This resets the find employee window to its base state.
 void FindEmployee::cancel()
 {
     employeeName->setText("");
-}
-
-void FindEmployee::setEmployeeID(int *employeeID, int employerID)
-{
-    currentEmployeeID = employeeID;
-    currentEmployerID = employerID;
 }

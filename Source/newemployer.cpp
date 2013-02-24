@@ -3,6 +3,7 @@
 #include "NewEmployer.h"
 #include <QtGui>
 
+//Draw the main New Employer window.
 NewEmployer::NewEmployer(QWidget *parent)
     : QDialog(parent)
 {
@@ -67,12 +68,16 @@ NewEmployer::NewEmployer(QWidget *parent)
     setWindowTitle(tr("New Employer"));
 }
 
+//This resets the New Employer window to its base state
+//and hides it.
 void NewEmployer::cancel()
 {
     hide();
     clearFields();
 }
 
+//This writes all of the necessary data to the necessary files,
+//resets New Employer to its base state, and hides the window.
 void NewEmployer::submit()
 {
     assignEmployerID();
@@ -80,6 +85,8 @@ void NewEmployer::submit()
     clearFields();
 }
 
+//This writes all of the employer information
+//to the employer data file.
 void NewEmployer::writeEmployerData()
 {
     QFile employerDataFile(EMPLOYERFILE);
@@ -93,13 +100,16 @@ void NewEmployer::writeEmployerData()
     addStringToFile(&employerDataFile, employerDataString);
 }
 
+//This assigns the employer ID of the new employer to one
+//higher than the previously highest employer ID.
 void NewEmployer::assignEmployerID()
 {
     QFile employerDataFile(EMPLOYERFILE);
     QVector<int> employerIDVector = generateIDVector(&employerDataFile, 0);
-    employerID = returnMaxValue(employerIDVector);
+    employerID = returnOneHigherThanMaxValue(employerIDVector);
 }
 
+//This resets all of the editable fields in the New Employer window.
 void NewEmployer::clearFields()
 {
     employerName->setText("");

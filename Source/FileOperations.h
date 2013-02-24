@@ -26,7 +26,7 @@ protected:
     //QVector<int> generateEmployeeIDVector();
     //QVector<int> generateEmployerIDVector();
     QVector<int> generateIDVector(QFile *file, int IDPosition);
-    int returnMaxValue(QVector<int> IDVector);
+    int returnOneHigherThanMaxValue(QVector<int> IDVector);
     void addStringToFile(QFile *file, QString string);
     void removeEntity(QFile *file, int currentID, int IDPosition);
 };

@@ -3,9 +3,11 @@
 #include <QtGui>
 #include "EmployeeInfo.h"
 
+//Draw base window for Employee Info.
 EmployeeInfo::EmployeeInfo(QWidget *parent)
     : QDialog(parent)
 {
+
     QLabel *firstNameLabel = new QLabel(tr("First Name"));
     employeeFirstName = new QLineEdit;
     employeeFirstName->setReadOnly(true);
@@ -161,12 +163,16 @@ EmployeeInfo::EmployeeInfo(QWidget *parent)
     setWindowTitle(tr("Employee Info"));
 }
 
+//The base OpenEval window passes the current employee ID and employer ID
+//to Employee Info through this function.
 void EmployeeInfo::setIDValues(int employeeID, int employerID)
 {
     currentEmployeeID = employeeID;
     currentEmployerID = employerID;
 }
 
+//This reads the necessary information from the employee data file and sets
+//the corresponding fields in the window with the information it contains.
 void EmployeeInfo::setFields()
 {
     QFile employeeDataFile(EMPLOYEEFILE);
@@ -219,6 +225,8 @@ void EmployeeInfo::setFields()
 
 }
 
+//This draws the Review Employee window and sets the necessary information.
+//The window is displayed when the corresponding button is clicked.
 void EmployeeInfo::showReviewInfo()
 {
     QLabel *workQualityLabel = new QLabel(tr("Quality of Work:"));
@@ -279,6 +287,7 @@ void EmployeeInfo::showReviewInfo()
     reviewDialog->show();
 }
 
+//This resets the Employee Info dialog to its base state.
 void EmployeeInfo::clearFields()
 {
     qualityOfWorkScore->setValue(1);
@@ -295,11 +304,15 @@ void EmployeeInfo::clearFields()
     employmentRecommendation->setText("");
 }
 
+//This updates all of the fields so that they
+//are no longer read only.
 void EmployeeInfo::editEmployee()
 {
     updateMode(EditingMode);
 }
 
+//This writes any changes that have been made through editing
+//mode to the employee info data file so that they are stored.
 void EmployeeInfo::submitEdits()
 {
     updateMode(ViewingMode);
@@ -318,12 +331,17 @@ void EmployeeInfo::submitEdits()
     addStringToFile(&employeeDataFile, employeeDataString);
 }
 
+//This resets the fields to be read only, and rereads the
+//information from the data file to be reset.
 void EmployeeInfo::cancelEdits()
 {
     updateMode(ViewingMode);
     setFields();
 }
 
+//This function takes a flag and updates the fields that contain
+//the information of the employee. If the flag is for editing mode,
+//the fields are set to be editable. Otherwise, they become read only.
 void EmployeeInfo::updateMode(Mode currentMode)
 {
     if (currentMode == EditingMode)

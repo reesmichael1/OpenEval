@@ -3,6 +3,7 @@
 #include <QtGui>
 #include "ReviewEmployee.h"
 
+//Draw the Review Employee window.
 ReviewEmployee::ReviewEmployee(QWidget *parent)
     : QDialog(parent)
 {
@@ -142,6 +143,7 @@ ReviewEmployee::ReviewEmployee(QWidget *parent)
     setWindowTitle(tr("Review Employee"));
 }
 
+//Write the review information to the review data file.
 void ReviewEmployee::submit()
 {
     assignEvaluationID();
@@ -171,21 +173,23 @@ void ReviewEmployee::submit()
     clearFields();
 }
 
+//Reset the Review Employee window to its base state.
 void ReviewEmployee::cancel()
 {
     hide();
     clearFields();
 }
 
+//Assign the evaluation ID to one higher than the current highest value.
 void ReviewEmployee::assignEvaluationID()
 {
 
     QFile evaluationResultsFile(EVALUATIONRESULTSFILE);
     QVector<int> evaluationIDVector = generateIDVector(&evaluationResultsFile, 0);
-    currentEvaluationID = returnMaxValue(evaluationIDVector);
-
+    currentEvaluationID = returnOneHigherThanMaxValue(evaluationIDVector);
 }
 
+//Reset the Review Employee window to its base state.
 void ReviewEmployee::clearFields()
 {
     workQualityComments->setText("");
@@ -203,18 +207,23 @@ void ReviewEmployee::clearFields()
 
 }
 
+//This allows the employee and employer IDs to be passed from
+//the base OpenEval window.
 void ReviewEmployee::setIDValues(int employeeID, int employerID)
 {
     currentEmployeeID = employeeID;
     currentEmployerID = employerID;
 }
 
+//This sets the employee and employer name fields.
 void ReviewEmployee::setFields()
 {
     setEmployeeName();
     setEmployerName();
 }
 
+//This sets the name of the employee that corresponds to
+//the current employee ID.
 void ReviewEmployee::setEmployeeName()
 {
 
@@ -227,6 +236,8 @@ void ReviewEmployee::setEmployeeName()
     employeeName->setText(employeeNameString);
 }
 
+//This sets the name of the employer that corresponds to
+//the current employer ID.
 void ReviewEmployee::setEmployerName()
 {
     QFile employerDataFile(EMPLOYERFILE);
@@ -239,6 +250,8 @@ void ReviewEmployee::setEmployerName()
 
 }
 
+//This calculates the average of the four values and then
+//sets the average score field to reflect this.
 void ReviewEmployee::setAverageScore()
 {
     double dTotal = (qualityOfWorkScore->value() + workHabitsScore->value()

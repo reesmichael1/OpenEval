@@ -3,6 +3,7 @@
 #include <QtGui>
 #include "FindEmployer.h"
 
+//Draw the main Find Employer window.
 FindEmployer::FindEmployer(QDialog * parent)
     : QDialog(parent)
 {
@@ -30,11 +31,24 @@ FindEmployer::FindEmployer(QDialog * parent)
 
 }
 
+//This function takes a pointer to the employer ID
+//within OpenEval to be updated as needed.
+void FindEmployer::setEmployerID(int *employerID)
+{
+    currentEmployerID = employerID;
+}
+
+//This searches the employer data file for an employer with
+//a certain name. If the employer cannot be found, the function
+//provides a notification that says so. Otherwise, the pointer
+//to the employer ID within the main OpenEval window is updated.
 void FindEmployer::findEmployer()
 {
     QFile employerDataFile(EMPLOYERFILE);
     QVector<int> employerIDVector = generateIDVector(&employerDataFile, 0);
     QString employerDataString;
+
+    bool employerFound = false;
 
     for (int i = 0; i < employerIDVector.size(); i++)
     {
@@ -43,17 +57,23 @@ void FindEmployer::findEmployer()
         {
             QStringList employerDataList = employerDataString.split("\",\"");
             *currentEmployerID = employerDataList.at(0).toInt();
+            employerFound = true;
         }
+    }
+
+    if (!employerFound)
+    {
+        QMessageBox employerNotFoundBox;
+        employerNotFoundBox.setText(tr("Sorry, %1 is not an employer saved within OpenEval.")
+            .arg(employerName->text()));
+        employerNotFoundBox.setWindowTitle(tr("Employer Not Found"));
+        employerNotFoundBox.exec();
     }
 
 }
 
+//This resets the Find Employer window to its base state.
 void FindEmployer::cancel()
 {
     employerName->setText("");
-}
-
-void FindEmployer::setEmployerID(int *employerID)
-{
-    currentEmployerID = employerID;
 }
