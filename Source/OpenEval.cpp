@@ -405,7 +405,7 @@ void OpenEval::reviewEmployee()
     reviewEmployeeWindow.setIDValues(currentEmployeeID, currentEmployerID);
     reviewEmployeeWindow.setFields();
     reviewEmployeeWindow.show();
-.
+
     if (reviewEmployeeWindow.exec() == QDialog::Accepted)
     {
         updateReviewFields();

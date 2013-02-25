@@ -160,10 +160,10 @@ void NewEmployee::employEmployee()
     QString employerDataString = returnLineWithString(&employerDataFile, employer, 1);
     QStringList employerDataList = employerDataString.split("\",\"");
 
-    int currentEmployerID = employerDataList.at(0).toInt();
-    *currentEmployerID = currentEmployerID;
+    int employerID = employerDataList.at(0).toInt();
+    *currentEmployerID = employerID;
 
-    QString fieldPlacementsString = QString::number(currentEmployeeID) + "\",\"" + QString::number(currentEmployerID);
+    QString fieldPlacementsString = QString::number(currentEmployeeID) + "\",\"" + QString::number(employerID);
 
     QFile fieldPlacementsFile(FIELDPLACEMENTSFILE);
     addStringToFile(&fieldPlacementsFile, fieldPlacementsString);
