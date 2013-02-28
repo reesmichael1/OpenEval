@@ -1,36 +1,5 @@
-
+Files/
+Debug/
+Release/
 *.autosave
 
-Files/EMPLOYEEID.txt
-
-Files/EMPLOYERID.txt
-
-Files/EMPLOYERS.txt
-
-Files/.DS_Store
-
-.DS_Store
-
-Files/EMPLOYEES.txt
-
-Files/FIELDPLACEMENTS.txt
-
-Source/OpenEval.pro.user
-
-Files Backup/EMPLOYEEID.txt
-
-Files Backup/EMPLOYEES.txt
-
-Files Backup/EMPLOYERID.txt
-
-Files Backup/EMPLOYERS.txt
-
-Files Backup/FIELDPLACEMENTS.txt
-
-Files alias
-
-Files/EVALUATIONRESULTS.txt
-
-Specs.pdf
-
-Files/EVALUATIONID.txt
