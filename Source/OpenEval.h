@@ -107,10 +107,9 @@ private:
     void enableEmployeeFields();
     void disableEmployerFields();
     void enableEmployerFields();
-    void printEmployerData();
-    void printEmployeeData();
-    void printEmployeeDataWithEvaluation();
-    void printEvaluationScores();
+    void printEmployerData(QPainter *painter, QPrinter *printer);
+    void printEmployeeData(QPainter *painter, QPrinter *printer, bool evaluationResults);
+    void printEvaluationScores(QPainter *painter, QPrinter *printer);
     void createActions();
     void createMenus();
 };
