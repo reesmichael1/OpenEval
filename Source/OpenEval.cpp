@@ -766,10 +766,6 @@ void OpenEval::printEmployerData(QPainter *painter, QPrinter *printer)
         {
             for (int i = 0; i < employerIDVector.size(); i++)
             {
-                if (page > printer->fromPage())
-                {
-                    printer->newPage();
-                }
                 QString employerDataString = returnDataString(&employerDataFile, employerIDVector.at(i), 0);
                 QStringList employerDataList = employerDataString.split("\",\"");
                 painter->drawText(QPoint::QPoint(500,500), tr("Employer Information"));
@@ -781,6 +777,11 @@ void OpenEval::printEmployerData(QPainter *painter, QPrinter *printer)
                 painter->drawText(QPoint::QPoint(500,1200), tr("Phone Number: %1").arg(employerDataList.at(6)));
                 painter->drawText(QPoint::QPoint(500,1300), tr("E-mail Address: %1").arg(employerDataList.at(7)));
                 painter->drawText(QPoint::QPoint(500,1400), tr("Contact Person: %1").arg(employerDataList.at(8)));
+
+                if (page <= printer->toPage())
+                {
+                    printer->newPage();
+                }
             }
         }
 
@@ -810,11 +811,6 @@ void OpenEval::printEmployeeData(QPainter *painter, QPrinter *printer, bool eval
         for (int page = printer->fromPage(); page <= printer->toPage(); page++)
         {
 
-            if (page != printer->fromPage())
-            {
-                printer->newPage();
-            }
-
             for (int i = 0; i < employeeIDVector.size(); i++)
             {
                 QString employeeDataString = returnDataString(&employeeDataFile, employeeIDVector.at(i), 0);
@@ -835,19 +831,27 @@ void OpenEval::printEmployeeData(QPainter *painter, QPrinter *printer, bool eval
                     QFile evaluationResultsDataFile(EVALUATIONRESULTSFILE);
                     QString evaluationResultsString = returnDataString(&evaluationResultsDataFile,
                                                                        employeeIDVector.at(i), 1);
-                    QStringList evaluationResultsList = evaluationResultsString.split("\",\"");
+                    if (evaluationResultsString != "")
+                    {
+                        QStringList evaluationResultsList = evaluationResultsString.split("\",\"");
 
-                    painter->drawText(QPoint::QPoint(500,1600), tr("Work Quality Comments: %1")
-                                      .arg(evaluationResultsList.at(6)));
-                    painter->drawText(QPoint::QPoint(500,1700), tr("Work Habits Comments: %1")
-                                      .arg(evaluationResultsList.at(8)));
-                    painter->drawText(QPoint::QPoint(500,1800), tr("Job Knowledge Comments: %1")
-                                      .arg(evaluationResultsList.at(10)));
-                    painter->drawText(QPoint::QPoint(500,1900), tr("Behavior Comments: %1")
-                                      .arg(evaluationResultsList.at(12)));
-                    painter->drawText(QPoint::QPoint(500,2000), tr("Overall Comments: %1")
-                                      .arg(evaluationResultsList.at(14)));
+                        painter->drawText(QPoint::QPoint(500,1600), tr("Work Quality Comments: %1")
+                                          .arg(evaluationResultsList.at(6)));
+                        painter->drawText(QPoint::QPoint(500,1700), tr("Work Habits Comments: %1")
+                                          .arg(evaluationResultsList.at(8)));
+                        painter->drawText(QPoint::QPoint(500,1800), tr("Job Knowledge Comments: %1")
+                                          .arg(evaluationResultsList.at(10)));
+                        painter->drawText(QPoint::QPoint(500,1900), tr("Behavior Comments: %1")
+                                          .arg(evaluationResultsList.at(12)));
+                        painter->drawText(QPoint::QPoint(500,2000), tr("Overall Comments: %1")
+                                          .arg(evaluationResultsList.at(14)));
+                    }
 
+                }
+
+                if (page <= printer->toPage())
+                {
+                    printer->newPage();
                 }
 
             }

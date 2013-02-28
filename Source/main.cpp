@@ -1,4 +1,4 @@
-//OpenEval v. 2.0 alpha
+//OpenEval v. 2.0
 
 //Call the function to draw the main window.
 
