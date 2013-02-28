@@ -1,5 +1,6 @@
 Files/
 Debug/
 Release/
+*.user
 *.autosave
 
