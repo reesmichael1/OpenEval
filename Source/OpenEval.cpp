@@ -2,6 +2,8 @@
 
 #include <QtGui>
 #include "OpenEval.h"
+#include <QPrinter>
+#include <QPainter>
 
 //This draws the main window and calls functions to construct other windows.
 OpenEval::OpenEval()
@@ -48,7 +50,7 @@ OpenEval::OpenEval()
 
     QLabel *averageLabel = new QLabel(tr("Average:"));
     averageLabel->setToolTip(tr("Average of scores for Quality of Work, "
-     "Work Habits, Job Knowledge, and Behavior."));
+                                "Work Habits, Job Knowledge, and Behavior."));
     averageScore = new QDoubleSpinBox;
     averageScore->setRange(1 , 5);
     averageScore->setReadOnly(true);
@@ -543,7 +545,7 @@ void OpenEval::removeEmployer()
 {
 
     int button = QMessageBox::question(this, tr("Confirm Remove"), tr("Are you sure you want to remove %1?\n"
-                    "All employees will be removed as well.")
+                                                                      "All employees will be removed as well.")
                                        .arg(employerName->text()), QMessageBox::Yes | QMessageBox::No);
 
     if (button == QMessageBox::Yes)
@@ -673,6 +675,224 @@ void OpenEval::updateReviewFields()
         behaviorScore->setValue(1);
         averageScore->setValue(1);
     }
+}
+
+//Display a dialog to set up the necessary print options, then call the
+//necessary function to print what has been requested.
+void OpenEval::printActionTriggered()
+{
+    QPrinter printer;
+
+    QDialog *printerOptions = new QDialog;
+
+    QLabel *instructionsLabel = new QLabel(tr("Which of the following would you like to print?"));
+
+    employeeData = new QCheckBox(tr("Information about each employee."));
+    employeeData->setAutoExclusive(true);
+
+    employerData = new QCheckBox(tr("Information about each employer."));
+    employerData->setAutoExclusive(true);
+
+    employeeDataWithEvaluation = new QCheckBox(tr("Information about each employee, including evaulation comments."));
+    employeeDataWithEvaluation->setAutoExclusive(true);
+
+    evaluationScores = new QCheckBox(tr("Each employee, sorted by evaluation scores."));
+    evaluationScores->setAutoExclusive(true);
+
+    QPushButton *submitPrinterOptionsButton = new QPushButton(tr("Submit Selection"));
+    connect(submitPrinterOptionsButton, SIGNAL(clicked()), printerOptions, SLOT(accept()));
+
+    QPushButton *cancelPrinterOptionsButton = new QPushButton(tr("Cancel"));
+    connect(cancelPrinterOptionsButton, SIGNAL(clicked()), printerOptions, SLOT(hide()));
+
+    QVBoxLayout *printerOptionsLayout = new QVBoxLayout;
+    printerOptionsLayout->addWidget(instructionsLabel);
+    printerOptionsLayout->addWidget(employeeData);
+    printerOptionsLayout->addWidget(employerData);
+    printerOptionsLayout->addWidget(employeeDataWithEvaluation);
+    printerOptionsLayout->addWidget(evaluationScores);
+    printerOptionsLayout->addWidget(cancelPrinterOptionsButton);
+    printerOptionsLayout->addWidget(submitPrinterOptionsButton);
+
+    printerOptions->setLayout(printerOptionsLayout);
+
+    if (printerOptions->exec() == QDialog::Accepted)
+
+    {
+
+        if (employeeData->isChecked())
+        {
+            printEmployeeData();
+        }
+
+        else if (employerData->isChecked())
+        {
+            printEmployerData();
+        }
+
+        else if (employeeDataWithEvaluation->isChecked())
+        {
+            printEmployeeDataWithEvaluation();
+        }
+
+        else
+        {
+            printEvaluationScores();
+        }
+
+    }
+    else
+    {
+        return;
+    }
+
+}
+
+//Print the information of each employer.
+void OpenEval::printEmployerData()
+{
+    QPrinter printer(QPrinter::HighResolution);
+    QPrintDialog *dialog = new QPrintDialog(&printer, this);
+    dialog->setWindowTitle(tr("Print Document"));
+    if (dialog->exec() != QDialog::Accepted)
+    {
+        return;
+    }
+
+    QPainter painter;
+    painter.begin(&printer);
+    painter.setBrush(QBrush(Qt::black));
+
+    for (int page = printer.fromPage(); page <= printer.toPage(); page++)
+    {
+
+        QFile employerDataFile(EMPLOYERFILE);
+        QVector<int> employerIDVector = generateIDVector(&employerDataFile,0);
+
+        if (!employerIDVector.isEmpty())
+        {
+            for (int i = 0; i < employerIDVector.size(); i++)
+            {
+                QString employerDataString = returnDataString(&employerDataFile, employerIDVector.at(i), 0);
+                QStringList employerDataList = employerDataString.split("\",\"");
+                painter.drawText(QPoint::QPoint(500,500), tr("Name: %1").arg(employerDataList.at(1)));
+                painter.drawText(QPoint::QPoint(500,600), tr("Address: %1").arg(employerDataList.at(2)));
+                painter.drawText(QPoint::QPoint(500,700), tr("City: %1").arg(employerDataList.at(3)));
+                painter.drawText(QPoint::QPoint(500,800), tr("State: %1").arg(employerDataList.at(4)));
+                painter.drawText(QPoint::QPoint(500,900), tr("Zip Code: %1").arg(employerDataList.at(5)));
+                painter.drawText(QPoint::QPoint(500,1000), tr("Phone Number: %1").arg(employerDataList.at(6)));
+                painter.drawText(QPoint::QPoint(500,1100), tr("E-mail Address: %1").arg(employerDataList.at(7)));
+                painter.drawText(QPoint::QPoint(500,1200), tr("Contact Person: %1").arg(employerDataList.at(8)));
+                if (page <= printer.toPage())
+                {
+                    printer.newPage();
+                }
+            }
+        }
+
+        else
+        {
+            QMessageBox error;
+            error.setText("Sorry, you don't have any employers.");
+            error.exec();
+            return;
+        }
+
+    }
+
+    painter.end();
+}
+
+//Print the information of each employee.
+void OpenEval::printEmployeeData()
+{
+    QPrinter printer(QPrinter::HighResolution);
+    QPrintDialog *dialog = new QPrintDialog(&printer, this);
+    dialog->setWindowTitle(tr("Print Document"));
+    if (dialog->exec() != QDialog::Accepted)
+    {
+        return;
+    }
+
+    QPainter painter;
+    painter.begin(&printer);
+
+    for (int page = printer.fromPage(); page <= printer.toPage(); page++)
+    {
+
+        bool firstPage = true;
+
+        if (!firstPage)
+        {
+            printer.newPage();
+        }
+
+        firstPage = false;
+    }
+
+    painter.end();
+
+}
+
+//Print the information of each employee, including review comments.
+void OpenEval::printEmployeeDataWithEvaluation()
+{
+    QPrinter printer(QPrinter::HighResolution);
+    QPrintDialog *dialog = new QPrintDialog(&printer, this);
+    dialog->setWindowTitle(tr("Print Document"));
+    if (dialog->exec() != QDialog::Accepted)
+    {
+        return;
+    }
+
+    QPainter painter;
+    painter.begin(&printer);
+
+    for (int page = printer.fromPage(); page <= printer.toPage(); page++)
+    {
+
+        bool firstPage = true;
+
+        if (!firstPage)
+        {
+            printer.newPage();
+        }
+
+        firstPage = false;
+    }
+
+    painter.end();
+}
+
+//Print each employee, sorted by evaluation scores.
+void OpenEval::printEvaluationScores()
+{
+    QPrinter printer(QPrinter::HighResolution);
+    QPrintDialog *dialog = new QPrintDialog(&printer, this);
+    dialog->setWindowTitle(tr("Print Document"));
+    if (dialog->exec() != QDialog::Accepted)
+    {
+        return;
+    }
+
+    QPainter painter;
+    painter.begin(&printer);
+    painter.setBrush(QBrush(Qt::black));
+
+    bool firstPage = true;
+
+    for (int page = printer.fromPage(); page <= printer.toPage(); page++)
+    {
+
+        if (!firstPage && page != printer.toPage())
+        {
+            printer.newPage();
+        }
+
+        firstPage = false;
+    }
+
+    painter.end();
 }
 
 //Set the first employee ID.
@@ -819,6 +1039,7 @@ void OpenEval::createMenus()
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(newEmployeeAction);
     fileMenu->addAction(newEmployerAction);
+    fileMenu->addAction(printAction);
 
     editMenu = menuBar()->addMenu(tr("&Edit"));
     editMenu->addAction(editEmployeeAction);
@@ -841,6 +1062,11 @@ void OpenEval::createActions()
     newEmployerAction = new QAction(tr("New Employer"), this);
     newEmployerAction->setStatusTip(tr("Create a new employer."));
     connect(newEmployerAction, SIGNAL(triggered()), this, SLOT(addEmployer()));
+
+    printAction = new QAction(tr("Print"), this);
+    printAction->setStatusTip(tr("Print information through a printer."));
+    printAction->setShortcut(QKeySequence::Print);
+    connect(printAction, SIGNAL(triggered()), this, SLOT(printActionTriggered()));
 
     editEmployeeAction = new QAction(tr("Edit Employee"), this);
     editEmployeeAction->setStatusTip(tr("Edit employee."));

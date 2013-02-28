@@ -40,6 +40,7 @@ public slots:
     void findEmployer();
     void removeEmployee();
     void removeEmployer();
+    void printActionTriggered();
 
 private:
     QLineEdit *employeeName;
@@ -67,6 +68,7 @@ private:
     QMenu *fileMenu;
     QMenu *editMenu;
     QMenu *toolsMenu;
+    QAction *printAction;
     QAction *newEmployeeAction;
     QAction *newEmployerAction;
     QAction *editEmployeeAction;
@@ -77,6 +79,11 @@ private:
     QAction *findEmployeeAction;
     QAction *findEmployerAction;
     QWidget *centralWidget;
+    QDialog *printerOptions;
+    QCheckBox *employeeData;
+    QCheckBox *employerData;
+    QCheckBox *employeeDataWithEvaluation;
+    QCheckBox *evaluationScores;
     NewEmployee newEmployeeWindow;
     NewEmployer newEmployerWindow;
     ReviewEmployee reviewEmployeeWindow;
@@ -100,6 +107,10 @@ private:
     void enableEmployeeFields();
     void disableEmployerFields();
     void enableEmployerFields();
+    void printEmployerData();
+    void printEmployeeData();
+    void printEmployeeDataWithEvaluation();
+    void printEvaluationScores();
     void createActions();
     void createMenus();
 };
