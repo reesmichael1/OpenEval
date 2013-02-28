@@ -83,7 +83,6 @@ private:
     QCheckBox *employeeData;
     QCheckBox *employerData;
     QCheckBox *employeeDataWithEvaluation;
-    QCheckBox *evaluationScores;
     NewEmployee newEmployeeWindow;
     NewEmployer newEmployerWindow;
     ReviewEmployee reviewEmployeeWindow;
@@ -109,7 +108,6 @@ private:
     void enableEmployerFields();
     void printEmployerData(QPainter *painter, QPrinter *printer);
     void printEmployeeData(QPainter *painter, QPrinter *printer, bool evaluationResults);
-    void printEvaluationScores(QPainter *painter, QPrinter *printer);
     void createActions();
     void createMenus();
 };

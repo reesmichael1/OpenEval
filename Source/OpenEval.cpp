@@ -695,9 +695,6 @@ void OpenEval::printActionTriggered()
     employeeDataWithEvaluation = new QCheckBox(tr("Information about each employee, including evaulation comments."));
     employeeDataWithEvaluation->setAutoExclusive(true);
 
-    evaluationScores = new QCheckBox(tr("Each employee, sorted by evaluation scores."));
-    evaluationScores->setAutoExclusive(true);
-
     QPushButton *submitPrinterOptionsButton = new QPushButton(tr("Submit Selection"));
     connect(submitPrinterOptionsButton, SIGNAL(clicked()), printerOptions, SLOT(accept()));
 
@@ -709,7 +706,6 @@ void OpenEval::printActionTriggered()
     printerOptionsLayout->addWidget(employeeData);
     printerOptionsLayout->addWidget(employerData);
     printerOptionsLayout->addWidget(employeeDataWithEvaluation);
-    printerOptionsLayout->addWidget(evaluationScores);
     printerOptionsLayout->addWidget(cancelPrinterOptionsButton);
     printerOptionsLayout->addWidget(submitPrinterOptionsButton);
 
@@ -728,29 +724,25 @@ void OpenEval::printActionTriggered()
             return;
         }
 
-        QPainter *painter;
-        painter->begin(&printer);
-        painter->setBrush(QBrush(Qt::black));
+        QPainter painter;
+        painter.begin(&printer);
+        painter.setBrush(QBrush(Qt::black));
 
         if (employeeData->isChecked())
         {
-            printEmployeeData(painter, &printer, false);
-        }
-
-        else if (employerData->isChecked())
-        {
-            printEmployerData(painter, &printer);
+            printEmployeeData(&painter, &printer, false);
         }
 
         else if (employeeDataWithEvaluation->isChecked())
         {
-            printEmployeeData(painter, &printer, true);
+            printEmployeeData(&painter, &printer, true);
         }
 
         else
         {
-            printEvaluationScores(painter, &printer);
+            printEmployerData(&painter, &printer);
         }
+
 
     }
     else
@@ -780,14 +772,15 @@ void OpenEval::printEmployerData(QPainter *painter, QPrinter *printer)
                 }
                 QString employerDataString = returnDataString(&employerDataFile, employerIDVector.at(i), 0);
                 QStringList employerDataList = employerDataString.split("\",\"");
-                painter->drawText(QPoint::QPoint(500,500), tr("Name: %1").arg(employerDataList.at(1)));
-                painter->drawText(QPoint::QPoint(500,600), tr("Address: %1").arg(employerDataList.at(2)));
-                painter->drawText(QPoint::QPoint(500,700), tr("City: %1").arg(employerDataList.at(3)));
-                painter->drawText(QPoint::QPoint(500,800), tr("State: %1").arg(employerDataList.at(4)));
-                painter->drawText(QPoint::QPoint(500,900), tr("Zip Code: %1").arg(employerDataList.at(5)));
-                painter->drawText(QPoint::QPoint(500,1000), tr("Phone Number: %1").arg(employerDataList.at(6)));
-                painter->drawText(QPoint::QPoint(500,1100), tr("E-mail Address: %1").arg(employerDataList.at(7)));
-                painter->drawText(QPoint::QPoint(500,1200), tr("Contact Person: %1").arg(employerDataList.at(8)));
+                painter->drawText(QPoint::QPoint(500,500), tr("Employer Information"));
+                painter->drawText(QPoint::QPoint(500,700), tr("Name: %1").arg(employerDataList.at(1)));
+                painter->drawText(QPoint::QPoint(500,800), tr("Address: %1").arg(employerDataList.at(2)));
+                painter->drawText(QPoint::QPoint(500,900), tr("City: %1").arg(employerDataList.at(3)));
+                painter->drawText(QPoint::QPoint(500,1000), tr("State: %1").arg(employerDataList.at(4)));
+                painter->drawText(QPoint::QPoint(500,1100), tr("Zip Code: %1").arg(employerDataList.at(5)));
+                painter->drawText(QPoint::QPoint(500,1200), tr("Phone Number: %1").arg(employerDataList.at(6)));
+                painter->drawText(QPoint::QPoint(500,1300), tr("E-mail Address: %1").arg(employerDataList.at(7)));
+                painter->drawText(QPoint::QPoint(500,1400), tr("Contact Person: %1").arg(employerDataList.at(8)));
             }
         }
 
@@ -807,8 +800,6 @@ void OpenEval::printEmployerData(QPainter *painter, QPrinter *printer)
 //Print the information of each employee.
 void OpenEval::printEmployeeData(QPainter *painter, QPrinter *printer, bool evaluationResults)
 {
-
-    painter->begin(printer);
 
     QFile employeeDataFile(EMPLOYEEFILE);
     QVector<int> employeeIDVector = generateIDVector(&employeeDataFile, 0);
@@ -844,7 +835,19 @@ void OpenEval::printEmployeeData(QPainter *painter, QPrinter *printer, bool eval
                     QFile evaluationResultsDataFile(EVALUATIONRESULTSFILE);
                     QString evaluationResultsString = returnDataString(&evaluationResultsDataFile,
                                                                        employeeIDVector.at(i), 1);
-                    QStringList evaluationResultsList = evaluationResulstsString.split("\",\"");
+                    QStringList evaluationResultsList = evaluationResultsString.split("\",\"");
+
+                    painter->drawText(QPoint::QPoint(500,1600), tr("Work Quality Comments: %1")
+                                      .arg(evaluationResultsList.at(6)));
+                    painter->drawText(QPoint::QPoint(500,1700), tr("Work Habits Comments: %1")
+                                      .arg(evaluationResultsList.at(8)));
+                    painter->drawText(QPoint::QPoint(500,1800), tr("Job Knowledge Comments: %1")
+                                      .arg(evaluationResultsList.at(10)));
+                    painter->drawText(QPoint::QPoint(500,1900), tr("Behavior Comments: %1")
+                                      .arg(evaluationResultsList.at(12)));
+                    painter->drawText(QPoint::QPoint(500,2000), tr("Overall Comments: %1")
+                                      .arg(evaluationResultsList.at(14)));
+
                 }
 
             }
@@ -860,26 +863,6 @@ void OpenEval::printEmployeeData(QPainter *painter, QPrinter *printer, bool eval
 
     painter->end();
 
-}
-
-//Print each employee, sorted by evaluation scores.
-void OpenEval::printEvaluationScores(QPainter *painter, QPrinter *printer)
-{
-
-    bool firstPage = true;
-
-    for (int page = printer->fromPage(); page <= printer->toPage(); page++)
-    {
-
-        if (!firstPage && page != printer->toPage())
-        {
-            printer->newPage();
-        }
-
-        firstPage = false;
-    }
-
-    painter->end();
 }
 
 //Set the first employee ID.
